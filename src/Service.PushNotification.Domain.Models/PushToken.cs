@@ -1,9 +1,9 @@
 using System.Runtime.Serialization;
 
-namespace Service.PushNotification.Grpc.Models
+namespace Service.PushNotification.Domain.Models
 {
     [DataContract]
-    public class RegisterTokenRequest
+    public class PushToken
     {
         [DataMember(Order = 1)] public string ClientId { get; set; }
         

@@ -2,7 +2,7 @@
 using Autofac.Core;
 using Autofac.Core.Registration;
 using MyJetWallet.Sdk.NoSql;
-using Service.PushNotification.Domain.Models;
+using Service.PushNotification.Domain.NoSql;
 
 namespace Service.PushNotification.Modules
 {

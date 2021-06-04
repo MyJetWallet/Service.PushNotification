@@ -1,5 +1,6 @@
 using System.ServiceModel;
 using System.Threading.Tasks;
+using Service.PushNotification.Domain.Models;
 using Service.PushNotification.Grpc.Models;
 
 namespace Service.PushNotification.Grpc
@@ -8,9 +9,8 @@ namespace Service.PushNotification.Grpc
     public interface ITokenManager
     {
         [OperationContract]
-        Task RegisterToken(RegisterTokenRequest request);
+        Task RegisterToken(PushToken request);
         
-        //move to non-grpc service?
         [OperationContract]
         Task<GetUserTokensResponse> GetUserTokens(GetUserTokensRequest request);
     }

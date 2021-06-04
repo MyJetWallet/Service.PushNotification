@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MyNoSqlServer.Abstractions;
 using Service.PushNotification.Domain.Models;
+using Service.PushNotification.Domain.NoSql;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models;
 using ILogger = Serilog.ILogger;
@@ -23,12 +24,11 @@ namespace Service.PushNotification.Services
         }
 
 
-        public async Task RegisterToken(RegisterTokenRequest request)
+        public async Task RegisterToken(PushToken request)
         {
             try
             {
-                await _noSqlWriter.InsertOrReplaceAsync(TokenNoSqlEntity.Create(request.ClientId, request.RootSessionId, request.Token,
-                    request.UserLocale));
+                await _noSqlWriter.InsertOrReplaceAsync(TokenNoSqlEntity.Create(request));
             }
             catch (Exception e)
             {
@@ -45,7 +45,7 @@ namespace Service.PushNotification.Services
                 var tokenEntities = await _noSqlWriter.GetAsync(request.ClientId);
                 return new GetUserTokensResponse
                 {
-                    Tokens = tokenEntities.Select(t => t.Token).ToArray()
+                    Tokens = tokenEntities.Select(t => t.PushToken.Token).ToArray()
                 };
             }
             catch (Exception e)
