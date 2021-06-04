@@ -15,7 +15,7 @@ namespace Service.PushNotification.Client
             
             builder.RegisterInstance(factory.GetTokenManager()).As<ITokenManager>().SingleInstance();
 
-            
+            builder.RegisterInstance(factory.GetNotificationService()).As<INotificationService>().SingleInstance();
         }
     }
 }

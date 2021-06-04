@@ -24,5 +24,8 @@ namespace Service.PushNotification.Client
         public IHelloService GetHelloService() => _channel.CreateGrpcService<IHelloService>();
         
         public ITokenManager GetTokenManager() => _channel.CreateGrpcService<ITokenManager>();
+        
+        public INotificationService GetNotificationService() => _channel.CreateGrpcService<INotificationService>();
+
     }
 }

@@ -17,5 +17,10 @@ namespace Service.PushNotification.Settings
         [YamlProperty("PushNotification.MyNoSqlWriterUrl")]
         public string MyNoSqlWriterUrl { get; set; }
 
+        [YamlProperty("PushNotification.PostgresConnectionString")]
+        public string PostgresConnectionString { get; set; }
+        
+        [YamlProperty("PushNotification.FirebaseCredentials")]
+        public string FirebaseCredentials { get; set; }
     }
 }
