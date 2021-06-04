@@ -26,7 +26,7 @@ namespace Service.PushNotification.Services
             {
                 FirebaseApp.Create(new AppOptions()
                 {
-                    Credential = GoogleCredential.FromJson(Program.Settings.FirebaseCredentials)
+                    Credential = GoogleCredential.FromJson(DecodeFromBase64(Program.Settings.EncodedFirebaseCredentials))
                 });
             }
             catch (Exception e)
@@ -64,6 +64,12 @@ namespace Service.PushNotification.Services
                 _logger.LogError(e, "Firebase message");
                 throw;
             }
+        }
+
+        private string DecodeFromBase64(string encoded)
+        {
+            var bytes = Convert.FromBase64String(encoded);
+            return System.Text.Encoding.UTF8.GetString(bytes);
         }
     }
 }

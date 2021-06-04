@@ -20,7 +20,7 @@ namespace Service.PushNotification.Settings
         [YamlProperty("PushNotification.PostgresConnectionString")]
         public string PostgresConnectionString { get; set; }
         
-        [YamlProperty("PushNotification.FirebaseCredentials")]
-        public string FirebaseCredentials { get; set; }
+        [YamlProperty("PushNotification.EncodedFirebaseCredentials")]
+        public string EncodedFirebaseCredentials { get; set; }
     }
 }
