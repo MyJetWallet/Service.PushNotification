@@ -36,7 +36,7 @@ namespace Service.PushNotification.Services
             }
         }
 
-        public async Task SendNotificationPush(string[] tokens, string message)
+        public async Task SendNotificationPush(string[] tokens, string title, string body)
         {
             try
             {
@@ -45,8 +45,8 @@ namespace Service.PushNotification.Services
                     Tokens = tokens.ToList(),
                     Notification = new Notification()
                     {
-                        Title = "test notification",
-                        Body = message
+                        Title = title,
+                        Body = body
                     }
                 };
                 var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(firebaseMessage);

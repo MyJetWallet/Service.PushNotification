@@ -25,8 +25,9 @@ namespace Service.PushNotification.Services
             {
                 ClientId = request.ClientId
             });
-            var message = $"Login message placeholder {request.Date}, {request.Ip}";
-            await _firebaseSender.SendNotificationPush(tokens.Tokens, message);
+            var title = $"Login {request.Ip}";
+            var body = $"Login placeholder {request.Date}, {request.Ip}";
+            await _firebaseSender.SendNotificationPush(tokens.Tokens, title, body);
         }
 
         public async Task SendPushTrade(TradePushRequest request)
@@ -35,8 +36,9 @@ namespace Service.PushNotification.Services
             {
                 ClientId = request.ClientId
             });
-            var message = $"Trade message placeholder {request.Date}, {request.Amount}, {request.Instrument}";
-            await _firebaseSender.SendNotificationPush(tokens.Tokens, message);        
+            var title = $"Trade {request.Instrument} {request.Amount}";
+            var body = $"Trade placeholder {request.Date}, {request.Amount}, {request.Instrument}";
+            await _firebaseSender.SendNotificationPush(tokens.Tokens, title, body);        
         }
     }
 }

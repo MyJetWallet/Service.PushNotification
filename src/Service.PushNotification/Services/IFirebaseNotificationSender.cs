@@ -5,6 +5,6 @@ namespace Service.PushNotification.Services
 {
     public interface IFirebaseNotificationSender : IStartable
     {
-        Task SendNotificationPush(string[] tokens, string message);
+        Task SendNotificationPush(string[] tokens, string title, string body);
     }
 }
