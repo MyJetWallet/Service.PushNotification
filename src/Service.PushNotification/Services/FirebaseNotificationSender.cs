@@ -43,9 +43,10 @@ namespace Service.PushNotification.Services
                 var firebaseMessage = new MulticastMessage
                 {
                     Tokens = tokens.ToList(),
-                    Data = new Dictionary<string, string>
+                    Notification = new Notification()
                     {
-                        {"message", message}
+                        Title = "test notification",
+                        Body = message
                     }
                 };
                 var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(firebaseMessage);
