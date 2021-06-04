@@ -5,4 +5,9 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MyJetWallet.Sdk.NoSql" Version="1.0.4" />
+    <PackageReference Include="MyNoSqlServer.Abstractions" Version="1.0.5" />
+  </ItemGroup>
+
 </Project>

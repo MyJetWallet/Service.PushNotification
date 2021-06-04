@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using MyJetWallet.Sdk.NoSql;
+using Service.PushNotification.Domain.Models;
 
 namespace Service.PushNotification.Modules
 {
@@ -8,7 +10,7 @@ namespace Service.PushNotification.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            
+            builder.RegisterMyNoSqlWriter<TokenNoSqlEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), TokenNoSqlEntity.TableName);
         }
     }
 }

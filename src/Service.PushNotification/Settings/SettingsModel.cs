@@ -13,5 +13,9 @@ namespace Service.PushNotification.Settings
 
         [YamlProperty("PushNotification.ElkLogs")]
         public LogElkSettings ElkLogs { get; set; }
+
+        [YamlProperty("PushNotification.MyNoSqlWriterUrl")]
+        public string MyNoSqlWriterUrl { get; set; }
+
     }
 }
