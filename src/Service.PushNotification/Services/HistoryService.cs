@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models;
+using Service.PushNotification.Grpc.Models.Requests;
+using Service.PushNotification.Grpc.Models.Responses;
 using Service.PushNotification.Postgres;
 
 namespace Service.PushNotification.Services

@@ -7,6 +7,7 @@ using Serilog;
 using Service.PushNotification.Domain.Models.Enums;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models;
+using Service.PushNotification.Grpc.Models.Requests;
 
 namespace Service.PushNotification.Services
 {

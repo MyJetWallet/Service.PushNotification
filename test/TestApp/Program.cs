@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ProtoBuf.Grpc.Client;
 using Service.PushNotification.Client;
 using Service.PushNotification.Grpc.Models;
+using Service.PushNotification.Grpc.Models.Requests;
 
 namespace TestApp
 {

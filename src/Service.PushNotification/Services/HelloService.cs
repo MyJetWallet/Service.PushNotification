@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models;
+using Service.PushNotification.Grpc.Models.Requests;
+using Service.PushNotification.Grpc.Models.Responses;
 using Service.PushNotification.Settings;
 
 namespace Service.PushNotification.Services

@@ -7,6 +7,8 @@ using Service.PushNotification.Domain.Models;
 using Service.PushNotification.Domain.NoSql;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models;
+using Service.PushNotification.Grpc.Models.Requests;
+using Service.PushNotification.Grpc.Models.Responses;
 using ILogger = Serilog.ILogger;
 
 namespace Service.PushNotification.Services
