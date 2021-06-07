@@ -60,6 +60,7 @@ namespace Service.PushNotification.Services
                     var msg = response.Responses[index];
                     statuses.Add(new NotificationStatusDbEntity()
                     {
+                        NotificationId = messageId,
                         StatusId = Guid.NewGuid(),
                         IsSuccess = msg.IsSuccess,
                         Token = tokens[index]
