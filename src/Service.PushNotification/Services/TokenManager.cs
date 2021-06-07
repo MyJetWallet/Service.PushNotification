@@ -54,5 +54,22 @@ namespace Service.PushNotification.Services
                 throw;
             }
         }
+        
+        public async Task<GetAllTokensResponse> GetAllTokens()
+        {
+            try
+            {
+                var tokenEntities = await _noSqlWriter.GetAsync();
+                return new GetAllTokensResponse
+                {
+                    Tokens = tokenEntities.Where(t=>t.PushToken != null).Select(t => t.PushToken).ToList()
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "When getting all tokens from DB");
+                throw;
+            }
+        }
     }
 }

@@ -58,6 +58,7 @@ namespace Service.PushNotification
                 endpoints.MapGrpcSchema<HelloService, IHelloService>();
                 endpoints.MapGrpcSchema<TokenManager, ITokenManager>();
                 endpoints.MapGrpcSchema<NotificationService, INotificationService>();
+                endpoints.MapGrpcSchema<HistoryService, IHistoryService>();
 
                 endpoints.MapGrpcSchemaRegistry();
 

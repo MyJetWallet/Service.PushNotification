@@ -1,20 +1,20 @@
+using System.Collections.Generic;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using Service.PushNotification.Domain.Models;
 using Service.PushNotification.Grpc.Models;
 
 namespace Service.PushNotification.Grpc
 {
     [ServiceContract]
-    public interface ITokenManager
+    public interface IHistoryService
     {
         [OperationContract]
-        Task RegisterToken(PushToken request);
+        Task<HistoryListResponse> GetAllRecords();
         
         [OperationContract]
-        Task<GetUserTokensResponse> GetUserTokens(GetUserTokensRequest request);
+        Task<HistoryListResponse> GetRecordsByClientId(HistoryRequest request);
         
         [OperationContract]
-        Task<GetAllTokensResponse> GetAllTokens();
+        Task<HistoryResponse> GetRecordByMessageId(HistoryRequest request);
     }
 }

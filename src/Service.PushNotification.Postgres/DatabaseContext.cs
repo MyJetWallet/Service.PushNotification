@@ -41,6 +41,10 @@ namespace Service.PushNotification.Postgres
 
             modelBuilder.Entity<NotificationStatusDbEntity>().ToTable(NotificationStatusTableName);
             modelBuilder.Entity<NotificationStatusDbEntity>().HasKey(e => e.StatusId);
+
+            modelBuilder.Entity<NotificationStatusDbEntity>()
+                .HasOne(s => s.HistoryDbEntity)
+                .WithMany(h => h.DeliveryStatuses);
             
             base.OnModelCreating(modelBuilder);
         }
