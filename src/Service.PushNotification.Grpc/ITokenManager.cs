@@ -13,5 +13,8 @@ namespace Service.PushNotification.Grpc
         
         [OperationContract]
         Task<GetUserTokensResponse> GetUserTokens(GetUserTokensRequest request);
+        
+        [OperationContract]
+        Task<GetAllTokensResponse> GetAllTokens();
     }
 }
