@@ -8,16 +8,19 @@ using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Service.PushNotification.Postgres;
 
 namespace Service.PushNotification.Services
 {
     public class FirebaseNotificationSender : IFirebaseNotificationSender, IStartable
     {
         private readonly ILogger<FirebaseNotificationSender> _logger;
+        private readonly IHistoryRecordingService _historyService;
 
-        public FirebaseNotificationSender(ILogger<FirebaseNotificationSender> logger)
+        public FirebaseNotificationSender(ILogger<FirebaseNotificationSender> logger, IHistoryRecordingService historyService)
         {
             _logger = logger;
+            _historyService = historyService;
         }
 
         public void Start()
@@ -36,10 +39,11 @@ namespace Service.PushNotification.Services
             }
         }
 
-        public async Task SendNotificationPush(string[] tokens, string title, string body)
+        public async Task SendNotificationPush(Guid messageId, string[] tokens, string title, string body)
         {
             try
             {
+                var statuses = new List<NotificationStatusDbEntity>();
                 var firebaseMessage = new MulticastMessage
                 {
                     Tokens = tokens.ToList(),
@@ -51,14 +55,21 @@ namespace Service.PushNotification.Services
                 };
                 var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(firebaseMessage);
 
-                if (response.FailureCount > 0)
+                for (var index = 0; index < response.Responses.Count; index++)
                 {
-                    foreach (var resp in response.Responses.Where(r => !r.IsSuccess))
+                    var msg = response.Responses[index];
+                    statuses.Add(new NotificationStatusDbEntity()
                     {
-                        _logger.LogWarning("Notification {MessageId} failed with exception {Exception}",
-                            resp.MessageId, resp.Exception);
-                    }
+                        StatusId = Guid.NewGuid(),
+                        IsSuccess = msg.IsSuccess,
+                        Token = tokens[index]
+                    });
+                    if (!msg.IsSuccess)
+                        _logger.LogWarning("Notification {MessageId} with {Token} failed with exception {Exception}", messageId, tokens[index],
+                            msg.Exception);
                 }
+
+                await _historyService.RecordNotificationStatuses(messageId, statuses);
             }
             catch (Exception e)
             {

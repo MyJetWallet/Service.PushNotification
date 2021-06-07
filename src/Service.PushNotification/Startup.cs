@@ -7,11 +7,13 @@ using Microsoft.Extensions.Hosting;
 using Autofac;
 using MyJetWallet.Sdk.GrpcMetrics;
 using MyJetWallet.Sdk.GrpcSchema;
+using MyJetWallet.Sdk.Postgres;
 using MyJetWallet.Sdk.Service;
 using Prometheus;
 using ProtoBuf.Grpc.Server;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Modules;
+using Service.PushNotification.Postgres;
 using Service.PushNotification.Services;
 using SimpleTrading.BaseMetrics;
 using SimpleTrading.ServiceStatusReporterConnector;
@@ -31,6 +33,9 @@ namespace Service.PushNotification
             services.AddHostedService<ApplicationLifetimeManager>();
 
             services.AddMyTelemetry("SP-", Program.Settings.ZipkinUrl);
+            
+            DatabaseContext.LoggerFactory = Program.LogFactory;
+            services.AddDatabase(DatabaseContext.Schema, Program.Settings.PostgresConnectionString, o => new DatabaseContext(o)); 
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
