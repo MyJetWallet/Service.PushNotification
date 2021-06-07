@@ -15,6 +15,7 @@ namespace Service.PushNotification.Modules
             builder.RegisterMyNoSqlWriter<TokenNoSqlEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), TokenNoSqlEntity.TableName);
             builder.RegisterType<TokenManager>().As<ITokenManager>().SingleInstance();
             builder.RegisterType<FirebaseNotificationSender>().As<IFirebaseNotificationSender>().SingleInstance();
+            builder.RegisterType<HistoryRecordingService>().As<IHistoryRecordingService>().SingleInstance();
         }
     }
 }
