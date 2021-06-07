@@ -69,6 +69,55 @@ namespace Service.PushNotification.Services
                 throw;
             }
         }
-        
+
+        public async Task<List<NotificationHistoryDbEntity>> GetAllRecords()
+        {
+            try
+            {
+                using (var ctx = new DatabaseContext(_db.Options))
+                {
+                    return await ctx.NotificationHistoryDbEntities.Include(s => s.DeliveryStatuses).ToListAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "When getting all history records");
+                throw;
+            }        
+        }
+
+        public async Task<List<NotificationHistoryDbEntity>> GetRecordsByClientId(string clientId)
+        {
+            try
+            {
+                using (var ctx = new DatabaseContext(_db.Options))
+                {
+                    return await ctx.NotificationHistoryDbEntities.Where(h=>h.ClientId == clientId).Include(s => s.DeliveryStatuses).ToListAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "When getting all history records for client {ClientId}", clientId);
+                throw;
+            }
+            
+        }
+
+        public async Task<NotificationHistoryDbEntity> GetRecordByMessageId(Guid notificationId)
+        {
+            try
+            {
+                using (var ctx = new DatabaseContext(_db.Options))
+                {
+                    return await ctx.NotificationHistoryDbEntities.Where(h=> h.NotificationId == notificationId).Include(s => s.DeliveryStatuses).FirstOrDefaultAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "When getting history record for {NotificationId}", notificationId);
+                throw;
+            }
+            
+        }
     }
 }

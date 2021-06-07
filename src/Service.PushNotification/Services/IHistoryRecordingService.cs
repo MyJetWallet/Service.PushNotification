@@ -12,5 +12,11 @@ namespace Service.PushNotification.Services
             List<string> parameters);
         
         Task RecordNotificationStatuses(Guid notificationId, List<NotificationStatusDbEntity> statuses);
+
+        Task<List<NotificationHistoryDbEntity>> GetAllRecords();
+        
+        Task<List<NotificationHistoryDbEntity>> GetRecordsByClientId(string clientId);
+        
+        Task<NotificationHistoryDbEntity> GetRecordByMessageId(Guid notificationId);
     }
 }
