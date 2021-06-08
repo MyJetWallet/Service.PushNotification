@@ -18,7 +18,7 @@ namespace Service.PushNotification.Domain.Extensions
             };
             
             //locals
-            static (string, string) ParseTuple(string key) => (key.Split(':')[0], key.Split(':')[1]);
+            static (string, string) ParseTuple(string key) => (key.Split(";-;")[0], key.Split(";-;")[1]);
         }
     }
 }

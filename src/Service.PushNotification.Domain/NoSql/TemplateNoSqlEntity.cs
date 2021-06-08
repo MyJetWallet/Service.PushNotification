@@ -10,11 +10,9 @@ namespace Service.PushNotification.Domain.NoSql
     {
         public const string TableName = "myjetwallet-pushnotification-templates";
 
-        public static string GeneratePartitionKey() => "TemplatesTest2";
+        public static string GeneratePartitionKey() => "Templates";
 
         public static string GenerateRowKey(NotificationTypeEnum type) => type.ToString();
-        
-        //public NotificationTemplate Template { get; set; }
         
         public NotificationTypeEnum Type { get; set; }
         
@@ -35,7 +33,7 @@ namespace Service.PushNotification.Domain.NoSql
                 DefaultBrand = template.DefaultBrand,
                 DefaultLang = template.DefaultLang,
                 Params = template.Params,
-                BodiesSerializable = template.Bodies.ToDictionary((pair => $"{pair.Key.brand}:{pair.Key.lang}"),pair => pair.Value)
+                BodiesSerializable = template.Bodies.ToDictionary((pair => $"{pair.Key.brand};-;{pair.Key.lang}"),pair => pair.Value)
             };
 
 
