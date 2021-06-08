@@ -29,5 +29,7 @@ namespace Service.PushNotification.Client
 
         public IHistoryService GetHistoryService() => _channel.CreateGrpcService<IHistoryService>();
 
+        public ITemplateService GetTemplateService() => _channel.CreateGrpcService<ITemplateService>();
+
     }
 }
