@@ -18,6 +18,8 @@ namespace Service.PushNotification.Client
             builder.RegisterInstance(factory.GetNotificationService()).As<INotificationService>().SingleInstance();
 
             builder.RegisterInstance(factory.GetHistoryService()).As<IHistoryService>().SingleInstance();
+
+            builder.RegisterInstance(factory.GetTemplateService()).As<ITemplateService>().SingleInstance();
         }
     }
 }
