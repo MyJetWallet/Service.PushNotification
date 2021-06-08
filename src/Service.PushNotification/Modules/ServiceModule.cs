@@ -18,6 +18,7 @@ namespace Service.PushNotification.Modules
             builder.RegisterType<TokenManager>().As<ITokenManager>().SingleInstance();
             builder.RegisterType<FirebaseNotificationSender>().As<IFirebaseNotificationSender>().SingleInstance();
             builder.RegisterType<HistoryRecordingService>().As<IHistoryRecordingService>().SingleInstance();
+            builder.RegisterType<TemplateService>().As<ITemplateService>().SingleInstance();
         }
     }
 }

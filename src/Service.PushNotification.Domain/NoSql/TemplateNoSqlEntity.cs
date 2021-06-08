@@ -33,7 +33,7 @@ namespace Service.PushNotification.Domain.NoSql
                 DefaultBrand = template.DefaultBrand,
                 DefaultLang = template.DefaultLang,
                 Params = template.Params,
-                BodiesSerializable = template.Bodies.ToDictionary((pair => $"{pair.Key.brand};-;{pair.Key.lang}"),pair => pair.Value)
+                BodiesSerializable = template.Bodies.ToDictionary((pair => $"{pair.Key.brand};-;{pair.Key.lang}"),pair => $"{pair.Value.topic};-;{pair.Value.body}")
             };
 
 

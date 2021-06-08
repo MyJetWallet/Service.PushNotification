@@ -14,7 +14,7 @@ namespace Service.PushNotification.Domain.Extensions
                 DefaultBrand = entity.DefaultBrand,
                 DefaultLang = entity.DefaultLang,
                 Params = entity.Params,
-                Bodies = entity.BodiesSerializable.ToDictionary(pair => ParseTuple(pair.Key), pair => pair.Value)
+                Bodies = entity.BodiesSerializable.ToDictionary(pair => ParseTuple(pair.Key), pair => ParseTuple(pair.Value))
             };
             
             //locals
