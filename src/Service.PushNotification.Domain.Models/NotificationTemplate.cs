@@ -17,7 +17,7 @@ namespace Service.PushNotification.Domain.Models
         public string DefaultLang { get; set; }
         
         [DataMember(Order = 4)]
-        public Dictionary<(string brand,string lang),string> Bodies { get; set; }
+        public Dictionary<(string brand,string lang),(string topic, string body)> Bodies { get; set; }
         
         [DataMember(Order = 5)]
         public List<string> Params { get; set; }

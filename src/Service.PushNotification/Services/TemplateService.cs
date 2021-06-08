@@ -22,11 +22,11 @@ namespace Service.PushNotification.Services
         private const string _defaultBrand = "Default";
         private const string _defaultLang = "En";
 
-        private readonly IDictionary<NotificationTypeEnum, string> _defaultLangTemplateBodies =
-            new Dictionary<NotificationTypeEnum, string>
+        private readonly IDictionary<NotificationTypeEnum, (string,string)> _defaultLangTemplateBodies =
+            new Dictionary<NotificationTypeEnum, (string,string)>
             {
-                {NotificationTypeEnum.LoginNotification, "Successful log in account from IP ${IP} (${DATE})"},
-                {NotificationTypeEnum.TradeNotification, "Trade made: ${SYMBOL}, price ${PRICE}, volume ${VOLUME}"}
+                {NotificationTypeEnum.LoginNotification, ("Successful log in","Successful log in account from IP ${IP} (${DATE})")},
+                {NotificationTypeEnum.TradeNotification, ("Trade made: ${SYMBOL}","Trade made: ${SYMBOL}, price ${PRICE}, volume ${VOLUME}")}
             };
 
         private readonly IDictionary<NotificationTypeEnum, List<string>> _templateBodyParams =
@@ -43,13 +43,13 @@ namespace Service.PushNotification.Services
             _logger = logger;
         }
 
-        public async Task<string> GetMessageTemplate(NotificationTypeEnum type, string brand, string lang)
+        public async Task<(string,string)> GetMessageTemplate(NotificationTypeEnum type, string brand, string lang)
         {
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(type);
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
 
-            string body;
+            (string, string) body; 
             if (!template.Bodies.TryGetValue((brand, lang), out body))
             {
                 _logger.LogWarning("No template found for {Type}, {Brand} and {Lang}", type, brand, lang);
@@ -123,15 +123,15 @@ namespace Service.PushNotification.Services
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.Type);
 
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
-            template.Bodies[(request.Brand, request.Lang)] = request.TemplateBody;
+            template.Bodies[(request.Brand, request.Lang)] = (request.TemplateTopic, request.TemplateBody);
 
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
         }
 
-        private Dictionary<(string, string), string> GetDefaultTemplateBodies(NotificationTypeEnum type, string brand,
+        private Dictionary<(string, string), (string, string)> GetDefaultTemplateBodies(NotificationTypeEnum type, string brand,
             string lang)
         {
-            return new Dictionary<(string, string), string>
+            return new Dictionary<(string, string), (string, string)>
             {
                 {
                     (brand, lang), _defaultLangTemplateBodies[type]

@@ -48,11 +48,14 @@ namespace Service.PushNotification.Services
             foreach (var lang in langGroups)
             {
                 var brand = lang.First().BrandId;
-                var template =
+                var (templateTopic, templateBody) =
                     await _templateService.GetMessageTemplate(NotificationTypeEnum.LoginNotification, brand, lang.Key);
 
-                var title = $"Login {request.Ip}";
-                var body = template
+                var title = templateTopic    
+                    .Replace("${IP}", request.Ip)
+                    .Replace("${DATE}", request.Date.ToString(CultureInfo.InvariantCulture));
+                
+                var body = templateBody
                     .Replace("${IP}", request.Ip)
                     .Replace("${DATE}", request.Date.ToString(CultureInfo.InvariantCulture));
 
@@ -81,11 +84,15 @@ namespace Service.PushNotification.Services
             foreach (var lang in langGroups)
             {
                 var brand = lang.First().BrandId;
-                var template =
+                var (templateTopic, templateBody) =
                     await _templateService.GetMessageTemplate(NotificationTypeEnum.TradeNotification, brand, lang.Key);
 
-                var title = $"Trade {request.Instrument} {request.Amount}";
-                var body = template
+                var title = templateTopic    
+                    .Replace("${SYMBOL}", request.Instrument)
+                    .Replace("${PRICE}", request.Price.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${VOLUME}", request.Amount.ToString(CultureInfo.InvariantCulture));
+                
+                var body = templateBody
                     .Replace("${SYMBOL}", request.Instrument)
                     .Replace("${PRICE}", request.Price.ToString(CultureInfo.InvariantCulture))
                     .Replace("${VOLUME}", request.Amount.ToString(CultureInfo.InvariantCulture));
