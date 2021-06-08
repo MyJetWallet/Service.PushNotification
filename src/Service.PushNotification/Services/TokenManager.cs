@@ -47,7 +47,7 @@ namespace Service.PushNotification.Services
                 var tokenEntities = await _noSqlWriter.GetAsync(request.ClientId);
                 return new GetUserTokensResponse
                 {
-                    Tokens = tokenEntities.Select(t => t.PushToken.Token).ToArray()
+                    Tokens = tokenEntities.Select(t => t.PushToken).ToList()
                 };
             }
             catch (Exception e)

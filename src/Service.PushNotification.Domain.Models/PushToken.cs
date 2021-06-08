@@ -12,5 +12,7 @@ namespace Service.PushNotification.Domain.Models
         [DataMember(Order = 3)]public string Token { get; set; }
         
         [DataMember(Order = 4)]public string UserLocale { get; set; }
+        
+        [DataMember(Order = 5)]public string BrandId { get; set; }
     }
 }

@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using MyNoSqlServer.Abstractions;
-using Newtonsoft.Json;
 using Service.PushNotification.Domain.Extensions;
 using Service.PushNotification.Domain.Models;
 using Service.PushNotification.Domain.Models.Enums;
@@ -14,43 +11,68 @@ using Service.PushNotification.Domain.NoSql;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models.Requests;
 using Service.PushNotification.Grpc.Models.Responses;
-using Enum = System.Enum;
 
 namespace Service.PushNotification.Services
 {
     public class TemplateService : ITemplateService
     {
-        private readonly ILogger<TemplateService> _logger; 
+        private readonly ILogger<TemplateService> _logger;
         private readonly IMyNoSqlServerDataWriter<TemplateNoSqlEntity> _templateWriter;
 
         private const string _defaultBrand = "Default";
         private const string _defaultLang = "En";
-        
-        private readonly IDictionary<NotificationTypeEnum, string> _defaultLangTemplateBodies = new Dictionary<NotificationTypeEnum, string>
-        {
-            { NotificationTypeEnum.LoginNotification, "Successful log in account from IP ${IP} (${DATE})" },
-            { NotificationTypeEnum.TradeNotification, "Trade made: ${SYMBOL}, price ${PRICE}, volume ${VOLUME}" }
-        };
-        private readonly IDictionary<NotificationTypeEnum, List<string>> _templateBodyParams = new Dictionary<NotificationTypeEnum, List<string>>
-        {
-            { NotificationTypeEnum.LoginNotification, new List<string> { "${IP}", "${DATE}" } },
-            { NotificationTypeEnum.TradeNotification, new List<string> { "${SYMBOL}", "${PRICE}", "${VOLUME}" } }
-        };
 
-        public TemplateService(IMyNoSqlServerDataWriter<TemplateNoSqlEntity> templateWriter, ILogger<TemplateService> logger)
+        private readonly IDictionary<NotificationTypeEnum, string> _defaultLangTemplateBodies =
+            new Dictionary<NotificationTypeEnum, string>
+            {
+                {NotificationTypeEnum.LoginNotification, "Successful log in account from IP ${IP} (${DATE})"},
+                {NotificationTypeEnum.TradeNotification, "Trade made: ${SYMBOL}, price ${PRICE}, volume ${VOLUME}"}
+            };
+
+        private readonly IDictionary<NotificationTypeEnum, List<string>> _templateBodyParams =
+            new Dictionary<NotificationTypeEnum, List<string>>
+            {
+                {NotificationTypeEnum.LoginNotification, new List<string> {"${IP}", "${DATE}"}},
+                {NotificationTypeEnum.TradeNotification, new List<string> {"${SYMBOL}", "${PRICE}", "${VOLUME}"}}
+            };
+
+        public TemplateService(IMyNoSqlServerDataWriter<TemplateNoSqlEntity> templateWriter,
+            ILogger<TemplateService> logger)
         {
             _templateWriter = templateWriter;
             _logger = logger;
         }
 
+        public async Task<string> GetMessageTemplate(NotificationTypeEnum type, string brand, string lang)
+        {
+            var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
+            var rowKey = TemplateNoSqlEntity.GenerateRowKey(type);
+            var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
+
+            string body;
+            if (!template.Bodies.TryGetValue((brand, lang), out body))
+            {
+                _logger.LogWarning("No template found for {Type}, {Brand} and {Lang}", type, brand, lang);
+                if (!template.Bodies.TryGetValue((template.DefaultBrand, lang), out body))
+                {
+                    _logger.LogWarning("No template found for  {Type}, {DefaultBrand} and {Lang}", type,
+                        template.DefaultBrand, lang);
+                    if (!template.Bodies.TryGetValue((template.DefaultBrand, template.DefaultLang), out body))
+                    {
+                        _logger.LogError("No default template for type {Type}", type);
+                        throw new Exception();
+                    }
+                }
+            }
+
+            return body;
+        }
 
         public async Task<TemplateListResponse> GetAllTemplates()
         {
             try
             {
-                var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
-
-                var templateEntities = (await _templateWriter.GetAsync(partKey))?.ToList(); //TODO: clean db and remove partkey
+                var templateEntities = (await _templateWriter.GetAsync())?.ToList();
 
                 var templates = new List<NotificationTemplate>();
 
@@ -100,21 +122,26 @@ namespace Service.PushNotification.Services
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.Type);
 
-            var template = (await _templateWriter.GetAsync(partKey,rowKey)).ToTemplate();
+            var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
             template.Bodies[(request.Brand, request.Lang)] = request.TemplateBody;
-            
+
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
         }
 
         private Dictionary<(string, string), string> GetDefaultTemplateBodies(NotificationTypeEnum type, string brand,
-            string lang) =>
-            new Dictionary<(string, string), string>()
+            string lang)
+        {
+            return new Dictionary<(string, string), string>
             {
                 {
                     (brand, lang), _defaultLangTemplateBodies[type]
                 }
             };
+        }
 
-        private List<string> GetTemplateBodyParams(NotificationTypeEnum type) => _templateBodyParams[type];
+        private List<string> GetTemplateBodyParams(NotificationTypeEnum type)
+        {
+            return _templateBodyParams[type];
+        }
     }
 }
