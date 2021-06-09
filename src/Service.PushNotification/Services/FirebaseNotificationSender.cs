@@ -8,6 +8,7 @@ using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Service.PushNotification.Domain.Models;
 using Service.PushNotification.Postgres;
 
 namespace Service.PushNotification.Services
@@ -39,14 +40,14 @@ namespace Service.PushNotification.Services
             }
         }
 
-        public async Task SendNotificationPush(Guid messageId, string[] tokens, string title, string body)
+        public async Task SendNotificationPush(Guid messageId, PushToken[] tokens, string title, string body)
         {
             try
             {
                 var statuses = new List<NotificationStatusDbEntity>();
                 var firebaseMessage = new MulticastMessage
                 {
-                    Tokens = tokens.ToList(),
+                    Tokens = tokens.Select(t=>t.Token).ToList(),
                     Notification = new Notification()
                     {
                         Title = title,
@@ -63,7 +64,8 @@ namespace Service.PushNotification.Services
                         NotificationId = messageId,
                         StatusId = Guid.NewGuid(),
                         IsSuccess = msg.IsSuccess,
-                        Token = tokens[index]
+                        Token = tokens[index].Token,
+                        UserAgent = tokens[index].UserAgent 
                     });
                     if (!msg.IsSuccess)
                         _logger.LogWarning("Notification {MessageId} with {Token} failed with exception {Exception}", messageId, tokens[index],

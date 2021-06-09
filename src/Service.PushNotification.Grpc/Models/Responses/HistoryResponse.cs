@@ -22,5 +22,6 @@ namespace Service.PushNotification.Grpc.Models.Responses
         [DataMember(Order = 1)] public Guid StatusId { get; set; }
         [DataMember(Order = 2)] public string Token { get; set; }
         [DataMember(Order = 3)] public bool IsSuccess { get; set; }
+        [DataMember(Order = 4)] public string UserAgent { get; set; }
     }
 }

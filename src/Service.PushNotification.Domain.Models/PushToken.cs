@@ -17,5 +17,7 @@ namespace Service.PushNotification.Domain.Models
         [DataMember(Order = 5)]public string BrandId { get; set; }
         
         [DataMember(Order = 6)]public DateTime Registered { get; set; }
+        
+        [DataMember(Order = 7)] public string UserAgent { get; set; }
     }
 }

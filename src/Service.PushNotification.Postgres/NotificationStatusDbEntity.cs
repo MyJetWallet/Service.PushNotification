@@ -8,6 +8,7 @@ namespace Service.PushNotification.Postgres
         public string Token { get; set; }
         public bool IsSuccess { get; set; }
         
+        public string UserAgent { get; set; }
         public Guid NotificationId { get; set; }
         public NotificationHistoryDbEntity HistoryDbEntity { get; set; }
     }

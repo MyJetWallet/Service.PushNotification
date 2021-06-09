@@ -59,7 +59,7 @@ namespace Service.PushNotification.Services
                     .Replace("${IP}", request.Ip)
                     .Replace("${DATE}", request.Date.ToString(CultureInfo.InvariantCulture));
 
-                var pushTokens = lang.Select(t => t.Token).ToArray();
+                var pushTokens = lang.Select(t => t).ToArray();
                 await _firebaseSender.SendNotificationPush(msgId, pushTokens, title, body);
             }
         }
@@ -97,7 +97,7 @@ namespace Service.PushNotification.Services
                     .Replace("${PRICE}", request.Price.ToString(CultureInfo.InvariantCulture))
                     .Replace("${VOLUME}", request.Amount.ToString(CultureInfo.InvariantCulture));
 
-                var pushTokens = lang.Select(t => t.Token).ToArray();
+                var pushTokens = lang.Select(t => t).ToArray();
                 await _firebaseSender.SendNotificationPush(msgId, pushTokens, title, body);
             }
         }

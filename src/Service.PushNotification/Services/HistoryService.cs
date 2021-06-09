@@ -46,6 +46,6 @@ namespace Service.PushNotification.Services
 
         private static List<StatusResponse> StatusEntityToResponse(List<NotificationStatusDbEntity> entities) =>
             entities?.Where(p=>p != null).Select(entity => new StatusResponse
-                {IsSuccess = entity.IsSuccess, StatusId = entity.StatusId, Token = entity.Token}).ToList();
+                {IsSuccess = entity.IsSuccess, StatusId = entity.StatusId, Token = entity.Token, UserAgent = entity.UserAgent}).ToList();
     }
 }
