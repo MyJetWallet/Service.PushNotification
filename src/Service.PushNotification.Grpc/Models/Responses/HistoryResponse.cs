@@ -13,6 +13,7 @@ namespace Service.PushNotification.Grpc.Models.Responses
         [DataMember(Order = 3)] public NotificationTypeEnum Type { get; set; }
         [DataMember(Order = 4)] public List<string> Params { get; set; }
         [DataMember(Order = 5)] public List<StatusResponse> StatusResponses { get; set; }
+        [DataMember(Order = 6)] public DateTime TimeStamp { get; set; }
     }
 
     [DataContract]

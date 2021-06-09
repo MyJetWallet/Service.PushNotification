@@ -40,7 +40,8 @@ namespace Service.PushNotification.Services
                     NotificationId = entity.NotificationId,
                     Params = entity.Params,
                     Type = entity.Type,
-                    StatusResponses = StatusEntityToResponse(entity.DeliveryStatuses)
+                    StatusResponses = StatusEntityToResponse(entity.DeliveryStatuses),
+                    TimeStamp = entity.TimeStamp
                 };
 
         private static List<StatusResponse> StatusEntityToResponse(List<NotificationStatusDbEntity> entities) =>
