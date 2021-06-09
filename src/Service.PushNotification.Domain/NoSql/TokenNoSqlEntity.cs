@@ -12,14 +12,12 @@ namespace Service.PushNotification.Domain.NoSql
         
         
         public PushToken PushToken { get; set; }
-
-        /// <summary>
-        /// Data and tone of create session
-        /// </summary>
+        
         public DateTime CreateTime { get; set; }
         
         public static TokenNoSqlEntity Create(PushToken token)
         {
+            token.Registered = DateTime.Now;
             return new TokenNoSqlEntity()
             {
                 PartitionKey = GeneratePartitionKey(token.ClientId),
