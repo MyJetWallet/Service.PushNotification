@@ -57,14 +57,18 @@ namespace Service.PushNotification.Services
             }
         }
         
-        public async Task<GetAllTokensResponse> GetAllTokens()
+        public async Task<GetAllTokensResponse> GetAllTokens(GetAllTokensRequest request)
         {
             try
             {
                 var tokenEntities = await _noSqlWriter.GetAsync();
                 return new GetAllTokensResponse
                 {
-                    Tokens = tokenEntities.Where(t=>t.PushToken != null).Select(t => t.PushToken).ToList()
+                    Tokens = tokenEntities
+                        .Where(t=>t.PushToken != null)
+                        .Where(t=> t.CreateTime < request.TimeStamp)
+                        .Take(request.Take ?? 30)
+                        .Select(t => t.PushToken).ToList()
                 };
             }
             catch (Exception e)

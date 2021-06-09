@@ -19,9 +19,9 @@ namespace Service.PushNotification.Services
             _historyRecordingService = historyRecordingService;
         }
 
-        public async Task<HistoryListResponse> GetAllRecords() => HistoryEntityToResponseList(await _historyRecordingService.GetAllRecords());
+        public async Task<HistoryListResponse> GetAllRecords(HistoryRequest request) => HistoryEntityToResponseList(await _historyRecordingService.GetAllRecords(request.TimeStamp, request.Take));
 
-        public async Task<HistoryListResponse> GetRecordsByClientId(HistoryRequest request) => HistoryEntityToResponseList(await _historyRecordingService.GetRecordsByClientId(request.ClientId));
+        public async Task<HistoryListResponse> GetRecordsByClientId(HistoryRequest request) => HistoryEntityToResponseList(await _historyRecordingService.GetRecordsByClientId(request.ClientId, request.TimeStamp, request.Take ));
 
         public async Task<HistoryResponse> GetRecordByMessageId(HistoryRequest request) => HistoryEntityToResponse(await _historyRecordingService.GetRecordByMessageId(request.NotificationId));
 

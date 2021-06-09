@@ -11,7 +11,7 @@ namespace Service.PushNotification.Grpc
     public interface IHistoryService
     {
         [OperationContract]
-        Task<HistoryListResponse> GetAllRecords();
+        Task<HistoryListResponse> GetAllRecords(HistoryRequest request);
         
         [OperationContract]
         Task<HistoryListResponse> GetRecordsByClientId(HistoryRequest request);
