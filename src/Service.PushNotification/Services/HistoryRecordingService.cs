@@ -70,13 +70,18 @@ namespace Service.PushNotification.Services
             }
         }
 
-        public async Task<List<NotificationHistoryDbEntity>> GetAllRecords()
+        public async Task<List<NotificationHistoryDbEntity>> GetAllRecords(DateTime timeStamp, int? take)
         {
             try
             {
                 using (var ctx = new DatabaseContext(_db.Options))
                 {
-                    return await ctx.NotificationHistoryDbEntities.Include(s => s.DeliveryStatuses).ToListAsync();
+                    return await ctx.NotificationHistoryDbEntities
+                        .Include(s => s.DeliveryStatuses)
+                        .Where(e => e.TimeStamp < timeStamp)
+                        .OrderByDescending(e => e.TimeStamp)
+                        .Take(take ?? 30)
+                        .ToListAsync();
                 }
             }
             catch (Exception e)
@@ -86,13 +91,19 @@ namespace Service.PushNotification.Services
             }        
         }
 
-        public async Task<List<NotificationHistoryDbEntity>> GetRecordsByClientId(string clientId)
+        public async Task<List<NotificationHistoryDbEntity>> GetRecordsByClientId(string clientId, DateTime timeStamp, int? take)
         {
             try
             {
                 using (var ctx = new DatabaseContext(_db.Options))
                 {
-                    return await ctx.NotificationHistoryDbEntities.Where(h=>h.ClientId == clientId).Include(s => s.DeliveryStatuses).ToListAsync();
+                    return await ctx.NotificationHistoryDbEntities
+                        .Where(h=> h.ClientId == clientId)      
+                        .Where(h => h.TimeStamp < timeStamp)
+                        .Include(s => s.DeliveryStatuses)
+                        .OrderByDescending(e => e.TimeStamp)
+                        .Take(take ?? 30)
+                        .ToListAsync();
                 }
             }
             catch (Exception e)
@@ -109,7 +120,10 @@ namespace Service.PushNotification.Services
             {
                 using (var ctx = new DatabaseContext(_db.Options))
                 {
-                    return await ctx.NotificationHistoryDbEntities.Where(h=> h.NotificationId == notificationId).Include(s => s.DeliveryStatuses).FirstOrDefaultAsync();
+                    return await ctx.NotificationHistoryDbEntities
+                        .Where(h=> h.NotificationId == notificationId)
+                        .Include(s => s.DeliveryStatuses)
+                        .FirstOrDefaultAsync();
                 }
             }
             catch (Exception e)

@@ -68,43 +68,42 @@ namespace Service.PushNotification.Services
             return body;
         }
 
+        public async Task CreateDefaultTemplates()
+        {
+            var templateEntities = (await _templateWriter.GetAsync())?.ToList();
+            foreach (var type in Enum.GetValues(typeof(NotificationTypeEnum)).Cast<NotificationTypeEnum>())
+            {
+                var templateEntity = templateEntities?.FirstOrDefault(e => e.Type == type);
+                if (templateEntity == null)
+                {
+                    var template = new NotificationTemplate
+                    {
+                        Type = type,
+                        DefaultBrand = _defaultBrand,
+                        DefaultLang = _defaultLang,
+                        Params = GetTemplateBodyParams(type),
+                        Bodies = GetDefaultTemplateBodies(type, _defaultBrand, _defaultLang)
+                    };
+
+                    var newTemplateEntity = TemplateNoSqlEntity.Create(template);
+                    await _templateWriter.InsertAsync(newTemplateEntity);
+
+                    _logger.LogInformation("Template (ID: {templateId}) doesn't exist, creating the new one.",
+                        type);
+                }
+            }
+        }
         public async Task<TemplateListResponse> GetAllTemplates()
         {
             try
             {
                 var templateEntities = (await _templateWriter.GetAsync())?.ToList();
-
                 var templates = new List<NotificationTemplate>();
-
                 foreach (var type in Enum.GetValues(typeof(NotificationTypeEnum)).Cast<NotificationTypeEnum>())
                 {
-                    NotificationTemplate template;
                     var templateEntity = templateEntities?.FirstOrDefault(e => e.Type == type);
-                    if (templateEntity == null)
-                    {
-                        template = new NotificationTemplate
-                        {
-                            Type = type,
-                            DefaultBrand = _defaultBrand,
-                            DefaultLang = _defaultLang,
-                            Params = GetTemplateBodyParams(type),
-                            Bodies = GetDefaultTemplateBodies(type, _defaultBrand, _defaultLang)
-                        };
-
-                        var newTemplateEntity = TemplateNoSqlEntity.Create(template);
-                        await _templateWriter.InsertAsync(newTemplateEntity);
-
-                        _logger.LogInformation("Template (ID: {templateId}) doesn't exist, creating the new one.",
-                            type);
-                    }
-                    else
-                    {
-                        template = templateEntity.ToTemplate();
-                    }
-
-                    templates.Add(template);
+                    templates.Add(templateEntity.ToTemplate());
                 }
-
                 return new TemplateListResponse
                 {
                     Templates = templates
@@ -131,17 +130,33 @@ namespace Service.PushNotification.Services
         private Dictionary<(string, string), (string, string)> GetDefaultTemplateBodies(NotificationTypeEnum type, string brand,
             string lang)
         {
-            return new Dictionary<(string, string), (string, string)>
+            try
             {
+                return new Dictionary<(string, string), (string, string)>
                 {
-                    (brand, lang), _defaultLangTemplateBodies[type]
-                }
-            };
+                    {
+                        (brand, lang), _defaultLangTemplateBodies[type]
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "No default template body found for type {Type}", type);
+                throw;
+            }
         }
 
         private List<string> GetTemplateBodyParams(NotificationTypeEnum type)
         {
-            return _templateBodyParams[type];
+            try
+            {
+                return _templateBodyParams[type];
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "No default template params found for type {Type}", type);
+                throw;
+            }
         }
     }
 }

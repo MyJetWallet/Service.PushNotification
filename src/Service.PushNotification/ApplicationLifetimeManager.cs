@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.Service;
+using Service.PushNotification.Grpc;
 using Service.PushNotification.Services;
 
 namespace Service.PushNotification
@@ -9,18 +10,21 @@ namespace Service.PushNotification
     {
         private readonly ILogger<ApplicationLifetimeManager> _logger;
         private readonly IFirebaseNotificationSender _firebaseSender;
+        private readonly ITemplateService _templateService;
 
-        public ApplicationLifetimeManager(IHostApplicationLifetime appLifetime, ILogger<ApplicationLifetimeManager> logger, IFirebaseNotificationSender firebaseSender)
+        public ApplicationLifetimeManager(IHostApplicationLifetime appLifetime, ILogger<ApplicationLifetimeManager> logger, IFirebaseNotificationSender firebaseSender, ITemplateService templateService)
             : base(appLifetime)
         {
             _logger = logger;
             _firebaseSender = firebaseSender;
+            _templateService = templateService;
         }
 
         protected override void OnStarted()
         {
             _logger.LogInformation("OnStarted has been called.");
             _firebaseSender.Start();
+            _templateService.CreateDefaultTemplates();
         }
 
         protected override void OnStopping()

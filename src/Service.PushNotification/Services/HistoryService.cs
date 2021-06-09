@@ -19,9 +19,9 @@ namespace Service.PushNotification.Services
             _historyRecordingService = historyRecordingService;
         }
 
-        public async Task<HistoryListResponse> GetAllRecords() => HistoryEntityToResponseList(await _historyRecordingService.GetAllRecords());
+        public async Task<HistoryListResponse> GetAllRecords(HistoryRequest request) => HistoryEntityToResponseList(await _historyRecordingService.GetAllRecords(request.TimeStamp, request.Take));
 
-        public async Task<HistoryListResponse> GetRecordsByClientId(HistoryRequest request) => HistoryEntityToResponseList(await _historyRecordingService.GetRecordsByClientId(request.ClientId));
+        public async Task<HistoryListResponse> GetRecordsByClientId(HistoryRequest request) => HistoryEntityToResponseList(await _historyRecordingService.GetRecordsByClientId(request.ClientId, request.TimeStamp, request.Take ));
 
         public async Task<HistoryResponse> GetRecordByMessageId(HistoryRequest request) => HistoryEntityToResponse(await _historyRecordingService.GetRecordByMessageId(request.NotificationId));
 
@@ -40,7 +40,8 @@ namespace Service.PushNotification.Services
                     NotificationId = entity.NotificationId,
                     Params = entity.Params,
                     Type = entity.Type,
-                    StatusResponses = StatusEntityToResponse(entity.DeliveryStatuses)
+                    StatusResponses = StatusEntityToResponse(entity.DeliveryStatuses),
+                    TimeStamp = entity.TimeStamp
                 };
 
         private static List<StatusResponse> StatusEntityToResponse(List<NotificationStatusDbEntity> entities) =>

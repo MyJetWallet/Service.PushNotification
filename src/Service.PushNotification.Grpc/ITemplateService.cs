@@ -15,6 +15,7 @@ namespace Service.PushNotification.Grpc
         [OperationContract]Task EditTemplate(TemplateEditRequest request);
 
         Task<(string, string)> GetMessageTemplate(NotificationTypeEnum type, string brand, string lang);
+        Task CreateDefaultTemplates();
 
     }
 }
