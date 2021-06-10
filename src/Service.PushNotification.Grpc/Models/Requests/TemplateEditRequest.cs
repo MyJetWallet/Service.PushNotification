@@ -15,9 +15,5 @@ namespace Service.PushNotification.Grpc.Models.Requests
         [DataMember(Order = 4)] public string TemplateTopic { get; set; }
         
         [DataMember(Order = 5)] public string TemplateBody { get; set; }
-        
-        [DataMember(Order = 6)] public string DefaultBrand { get; set; }
-
-        [DataMember(Order = 7)] public string DefaultLang { get; set; }
     }
 }

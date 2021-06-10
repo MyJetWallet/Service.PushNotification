@@ -159,17 +159,17 @@ namespace Service.PushNotification.Services
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.Type);
 
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
-            template.DefaultBrand = request.DefaultBrand;
-            template.DefaultLang = request.DefaultLang;
+            template.DefaultBrand = request.Brand;
+            template.DefaultLang = request.Lang;
 
             if (string.IsNullOrWhiteSpace(request.TemplateBody) && string.IsNullOrWhiteSpace(request.TemplateTopic))
             {
-                template.Bodies[(request.DefaultBrand, request.DefaultLang)] =
+                template.Bodies[(request.Brand, request.Lang)] =
                     _defaultLangTemplateBodies[template.Type];
             }
             else
             {
-                template.Bodies[(request.DefaultBrand, request.DefaultLang)] =
+                template.Bodies[(request.Brand, request.Lang)] =
                     (request.TemplateTopic, request.TemplateBody);
             }
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
