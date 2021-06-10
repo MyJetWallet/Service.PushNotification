@@ -152,6 +152,28 @@ namespace Service.PushNotification.Services
 
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
         }
+        
+        public async Task EditDefaultValues(TemplateEditRequest request)
+        {
+            var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
+            var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.Type);
+
+            var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
+            template.DefaultBrand = request.DefaultBrand;
+            template.DefaultLang = request.DefaultLang;
+
+            if (string.IsNullOrWhiteSpace(request.TemplateBody) && string.IsNullOrWhiteSpace(request.TemplateTopic))
+            {
+                template.Bodies[(request.DefaultBrand, request.DefaultLang)] =
+                    _defaultLangTemplateBodies[template.Type];
+            }
+            else
+            {
+                template.Bodies[(request.DefaultBrand, request.DefaultLang)] =
+                    (request.TemplateTopic, request.TemplateBody);
+            }
+            await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
+        }
 
         private Dictionary<(string, string), (string, string)> GetDefaultTemplateBodies(NotificationTypeEnum type, string brand,
             string lang)

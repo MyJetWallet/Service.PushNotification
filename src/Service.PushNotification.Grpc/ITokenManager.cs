@@ -18,5 +18,8 @@ namespace Service.PushNotification.Grpc
         
         [OperationContract]
         Task<GetAllTokensResponse> GetAllTokens(GetAllTokensRequest request);
+
+        [OperationContract]
+        Task RemoveToken(RemoveTokenRequest request);
     }
 }

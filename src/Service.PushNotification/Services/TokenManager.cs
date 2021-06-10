@@ -77,5 +77,21 @@ namespace Service.PushNotification.Services
                 throw;
             }
         }
+
+        public async Task RemoveToken(RemoveTokenRequest request)
+        {
+            try
+            {
+                var partKey = TokenNoSqlEntity.GeneratePartitionKey(request.ClientId);
+                var rowKey = TokenNoSqlEntity.GenerateRowKey(request.RootSessionId);
+                await _noSqlWriter.DeleteAsync(partKey, rowKey);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"When deleting token for client {request.ClientId} and rootSession {request.RootSessionId}", request.ClientId, request.RootSessionId);
+                throw;
+            }
+
+        }
     }
 }
