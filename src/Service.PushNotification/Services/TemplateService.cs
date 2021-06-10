@@ -43,6 +43,32 @@ namespace Service.PushNotification.Services
             _logger = logger;
         }
 
+        public async Task DeleteBody(TemplateEditRequest request)
+        {
+            try
+            {
+                var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
+                var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.Type);
+                var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
+                if (template.DefaultBrand == request.Brand && template.DefaultLang == request.Lang)
+                {
+                    _logger.LogWarning("Unable to delete default template for type {Type}", template.Type);
+                    throw new InvalidOperationException($"Unable to delete default template for type {template.Type}");
+                }
+
+                if (template.Bodies.ContainsKey((request.Brand, request.Lang)))
+                {
+                    template.Bodies.Remove((request.Brand, request.Lang));
+                    await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "When trying to delete body for template {Type} with brand {Brand} and lang {Lang}", request.Type, request.Brand, request.Lang);
+                throw;
+            }
+        }
+
         public async Task<(string,string)> GetMessageTemplate(NotificationTypeEnum type, string brand, string lang)
         {
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
