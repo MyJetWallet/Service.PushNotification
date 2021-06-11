@@ -22,5 +22,11 @@ namespace Service.PushNotification.Settings
         
         [YamlProperty("PushNotification.EncodedFirebaseCredentials")]
         public string EncodedFirebaseCredentials { get; set; }
+        
+        [YamlProperty("PushNotification.AuthMyNoSqlReaderHostPort")]
+        public string AuthMyNoSqlReaderHostPort { get; set; }
+        
+        [YamlProperty("PushNotification.TimerPeriodInSec")]
+        public int TimerPeriodInSec { get; set; }
     }
 }
