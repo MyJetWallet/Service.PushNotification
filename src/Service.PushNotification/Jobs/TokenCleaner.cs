@@ -72,6 +72,7 @@ namespace Service.PushNotification.Jobs
                 if (!sessions.Any(s => s.RootSessionId().ToString("N") == token.PushToken.RootSessionId))
                 {
                     await _tokenWriter.DeleteAsync(token.PartitionKey, token.RowKey);
+                    _logger.LogInformation("Removing firebase pushtoken with id {Id} for rootSession {RootSessionId}",token.PushToken.ClientId, token.PushToken.RootSessionId);
                 }
             }
             catch (Exception e)

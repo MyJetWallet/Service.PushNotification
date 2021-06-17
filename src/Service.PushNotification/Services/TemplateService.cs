@@ -19,8 +19,8 @@ namespace Service.PushNotification.Services
         private readonly ILogger<TemplateService> _logger;
         private readonly IMyNoSqlServerDataWriter<TemplateNoSqlEntity> _templateWriter;
 
-        private const string _defaultBrand = "Default";
-        private const string _defaultLang = "En";
+        private const string _defaultBrand = "default";
+        private const string _defaultLang = "en";
 
         private readonly IDictionary<NotificationTypeEnum, (string,string)> _defaultLangTemplateBodies =
             new Dictionary<NotificationTypeEnum, (string,string)>
@@ -75,6 +75,9 @@ namespace Service.PushNotification.Services
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(type);
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
 
+            brand = brand.ToLower();
+            lang = lang.ToLower();
+            
             (string, string) body; 
             if (!template.Bodies.TryGetValue((brand, lang), out body))
             {
@@ -148,7 +151,7 @@ namespace Service.PushNotification.Services
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.Type);
 
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
-            template.Bodies[(request.Brand, request.Lang)] = (request.TemplateTopic, request.TemplateBody);
+            template.Bodies[(request.Brand.ToLower(), request.Lang.ToLower())] = (request.TemplateTopic, request.TemplateBody);
 
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
         }
@@ -157,6 +160,8 @@ namespace Service.PushNotification.Services
         {
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.Type);
+            request.Brand = request.Brand.ToLower();
+            request.Lang = request.Lang.ToLower();
 
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
             template.DefaultBrand = request.Brand;
