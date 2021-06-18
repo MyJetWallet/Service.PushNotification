@@ -82,14 +82,19 @@ namespace Service.PushNotification.Services
             if (!template.Bodies.TryGetValue((brand, lang), out body))
             {
                 _logger.LogWarning("No template found for {Type}, {Brand} and {Lang}", type, brand, lang);
-                if (!template.Bodies.TryGetValue((template.DefaultBrand, lang), out body))
+                if(!template.Bodies.TryGetValue((brand, template.DefaultLang), out body))
                 {
-                    _logger.LogWarning("No template found for  {Type}, {DefaultBrand} and {Lang}", type,
-                        template.DefaultBrand, lang);
-                    if (!template.Bodies.TryGetValue((template.DefaultBrand, template.DefaultLang), out body))
+                    _logger.LogWarning("No template found for  {Type}, {Brand} and {DefaultLang}", type,
+                        brand, template.DefaultLang);
+                    if (!template.Bodies.TryGetValue((template.DefaultBrand, lang), out body))
                     {
-                        _logger.LogError("No default template for type {Type}", type);
-                        throw new Exception();
+                        _logger.LogWarning("No template found for  {Type}, {DefaultBrand} and {Lang}", type,
+                            template.DefaultBrand, lang);
+                        if (!template.Bodies.TryGetValue((template.DefaultBrand, template.DefaultLang), out body))
+                        {
+                            _logger.LogError("No default template for type {Type}", type);
+                            throw new Exception();
+                        }
                     }
                 }
             }
