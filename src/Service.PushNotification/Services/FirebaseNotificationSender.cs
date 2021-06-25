@@ -28,10 +28,14 @@ namespace Service.PushNotification.Services
         {
             try
             {
-                FirebaseApp.Create(new AppOptions()
+                foreach (var (brand, credentialString) in Program.Settings.EncodedFirebaseCredentials)
                 {
-                    Credential = GoogleCredential.FromJson(DecodeFromBase64(Program.Settings.EncodedFirebaseCredentials))
-                });
+                    FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromJson(DecodeFromBase64(credentialString)),
+                    }, brand.ToLower());
+                }
+
             }
             catch (Exception e)
             {
@@ -54,7 +58,14 @@ namespace Service.PushNotification.Services
                         Body = body
                     }
                 };
-                var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(firebaseMessage);
+
+                var app = FirebaseApp.GetInstance(tokens.First().BrandId.ToLower());
+                if (app == null)
+                {
+                    throw new ArgumentException("Unable to find credentials for BrandId {BrandId}",
+                        tokens.First().BrandId);
+                }
+                var response = await FirebaseMessaging.GetMessaging(app).SendMulticastAsync(firebaseMessage);
 
                 for (var index = 0; index < response.Responses.Count; index++)
                 {
@@ -76,7 +87,7 @@ namespace Service.PushNotification.Services
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Firebase message");
+                _logger.LogError(e, "When trying to send Firebase message with messageId {MessageId}", messageId);
                 throw;
             }
         }

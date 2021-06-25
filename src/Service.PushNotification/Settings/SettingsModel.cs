@@ -1,4 +1,5 @@
-﻿using MyJetWallet.Sdk.Service;
+﻿using System.Collections.Generic;
+using MyJetWallet.Sdk.Service;
 using MyYamlParser;
 
 namespace Service.PushNotification.Settings
@@ -21,7 +22,7 @@ namespace Service.PushNotification.Settings
         public string PostgresConnectionString { get; set; }
         
         [YamlProperty("PushNotification.EncodedFirebaseCredentials")]
-        public string EncodedFirebaseCredentials { get; set; }
+        public Dictionary<string,string> EncodedFirebaseCredentials { get; set; }
         
         [YamlProperty("PushNotification.AuthMyNoSqlReaderHostPort")]
         public string AuthMyNoSqlReaderHostPort { get; set; }
