@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MyJetWallet.Sdk.Authorization.NoSql;
 using MyNoSqlServer.Abstractions;
 using Service.PushNotification.Domain.Models;
 using Service.PushNotification.Domain.NoSql;
@@ -9,7 +11,6 @@ using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models;
 using Service.PushNotification.Grpc.Models.Requests;
 using Service.PushNotification.Grpc.Models.Responses;
-using ILogger = Serilog.ILogger;
 
 namespace Service.PushNotification.Services
 {
@@ -17,12 +18,14 @@ namespace Service.PushNotification.Services
     {
 
         private readonly IMyNoSqlServerDataWriter<TokenNoSqlEntity> _noSqlWriter;
+        private readonly IMyNoSqlServerDataReader<ShortRootSessionNoSqlEntity> _sessionReader;
         private readonly ILogger<TokenManager> _logger;
 
-        public TokenManager(IMyNoSqlServerDataWriter<TokenNoSqlEntity> noSqlWriter, ILogger<TokenManager> logger)
+        public TokenManager(IMyNoSqlServerDataWriter<TokenNoSqlEntity> noSqlWriter, ILogger<TokenManager> logger, IMyNoSqlServerDataReader<ShortRootSessionNoSqlEntity> sessionReader)
         {
             _noSqlWriter = noSqlWriter;
             _logger = logger;
+            _sessionReader = sessionReader;
         }
 
 
@@ -44,10 +47,25 @@ namespace Service.PushNotification.Services
         {
             try
             {
-                var tokenEntities = await _noSqlWriter.GetAsync(request.ClientId);
+                var tokenEntities = (await _noSqlWriter.GetAsync(request.ClientId)).ToList();
+                var tokens = new List<PushToken>();
+                foreach (var token in tokenEntities)
+                {
+                    var sessions = _sessionReader.Get(ShortRootSessionNoSqlEntity.GeneratePartitionKey(token.PushToken.RootSessionId));
+                    if (sessions.Any())
+                    {
+                        tokens.Add(token.PushToken);
+                    }
+                    else
+                    {
+                        await _noSqlWriter.DeleteAsync(token.PartitionKey, token.RowKey);
+                        _logger.LogWarning("Token for userId {userId} and rootSessionId {rootSessionId} has no corresponding session", token.PushToken.ClientId, token.PushToken.RootSessionId);
+                    }
+                }
+
                 return new GetUserTokensResponse
                 {
-                    Tokens = tokenEntities.Select(t => t.PushToken).ToList()
+                    Tokens = tokens
                 };
             }
             catch (Exception e)
