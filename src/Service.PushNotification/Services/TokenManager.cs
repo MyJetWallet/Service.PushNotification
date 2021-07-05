@@ -51,7 +51,7 @@ namespace Service.PushNotification.Services
                 var tokens = new List<PushToken>();
                 foreach (var token in tokenEntities)
                 {
-                    var sessions = _sessionReader.Get(ShortRootSessionNoSqlEntity.GeneratePartitionKey(token.PushToken.RootSessionId));
+                    var sessions = _sessionReader.Get(ShortRootSessionNoSqlEntity.GeneratePartitionKey(request.ClientId));
                     if (sessions.Any())
                     {
                         tokens.Add(token.PushToken);
