@@ -51,13 +51,20 @@ namespace Service.PushNotification.Services
                 var tokens = new List<PushToken>();
                 foreach (var token in tokenEntities)
                 {
+                    Console.WriteLine($"{DateTime.UtcNow}: Looking for sessions for token with sessionId {token.PushToken.RootSessionId}");
+
                     var sessions = _sessionReader.Get(ShortRootSessionNoSqlEntity.GeneratePartitionKey(request.ClientId));
                     if (sessions.Any())
                     {
+                        foreach (var s in sessions)
+                        {
+                            Console.WriteLine($"{DateTime.UtcNow}: Found session {s.RootSessionId()}, client {s.TraderId()}");
+                        }
                         tokens.Add(token.PushToken);
                     }
                     else
                     {
+                        Console.WriteLine($"{DateTime.UtcNow}: No sessions found");
                         await _noSqlWriter.DeleteAsync(token.PartitionKey, token.RowKey);
                         _logger.LogWarning("Token for userId {userId} and rootSessionId {rootSessionId} has no corresponding session", token.PushToken.ClientId, token.PushToken.RootSessionId);
                     }
