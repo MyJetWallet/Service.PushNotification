@@ -64,7 +64,7 @@ namespace Service.PushNotification.Services
                     }
                     else
                     {
-                        Console.WriteLine($"{DateTime.UtcNow}: No sessions found");
+                        Console.WriteLine($"{DateTime.UtcNow}: No sessions found for token with sessionId {token.PushToken.RootSessionId}");
                         await _noSqlWriter.DeleteAsync(token.PartitionKey, token.RowKey);
                         _logger.LogWarning("Token for userId {userId} and rootSessionId {rootSessionId} has no corresponding session", token.PushToken.ClientId, token.PushToken.RootSessionId);
                     }
