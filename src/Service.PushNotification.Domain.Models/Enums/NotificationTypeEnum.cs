@@ -6,6 +6,7 @@ namespace Service.PushNotification.Domain.Models.Enums
         TradeNotification,
         WithdrawalApprove,
         WithdrawalComplete,
+        WithdrawalDecline,
         DepositReceive,
         Swap
     }
