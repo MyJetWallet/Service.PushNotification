@@ -22,19 +22,7 @@ namespace Service.PushNotification.Services
         private const string _defaultBrand = "default";
         private const string _defaultLang = "en";
 
-        private readonly IDictionary<NotificationTypeEnum, (string,string)> _defaultLangTemplateBodies =
-            new Dictionary<NotificationTypeEnum, (string,string)>
-            {
-                {NotificationTypeEnum.LoginNotification, ("Successful log in","Successful log in account from IP ${IP} (${DATE})")},
-                {NotificationTypeEnum.TradeNotification, ("Trade made: ${SYMBOL}","Trade made: ${SYMBOL}, price ${PRICE}, volume ${VOLUME}")}
-            };
-
-        private readonly IDictionary<NotificationTypeEnum, List<string>> _templateBodyParams =
-            new Dictionary<NotificationTypeEnum, List<string>>
-            {
-                {NotificationTypeEnum.LoginNotification, new List<string> {"${IP}", "${DATE}"}},
-                {NotificationTypeEnum.TradeNotification, new List<string> {"${SYMBOL}", "${PRICE}", "${VOLUME}"}}
-            };
+        
 
         public TemplateService(IMyNoSqlServerDataWriter<TemplateNoSqlEntity> templateWriter,
             ILogger<TemplateService> logger)
@@ -136,7 +124,11 @@ namespace Service.PushNotification.Services
                 foreach (var type in Enum.GetValues(typeof(NotificationTypeEnum)).Cast<NotificationTypeEnum>())
                 {
                     var templateEntity = templateEntities?.FirstOrDefault(e => e.Type == type);
-                    templates.Add(templateEntity.ToTemplate());
+
+                    if (templateEntity != null)
+                    {
+                        templates.Add(templateEntity.ToTemplate());
+                    }
                 }
                 return new TemplateListResponse
                 {
@@ -175,7 +167,7 @@ namespace Service.PushNotification.Services
             if (string.IsNullOrWhiteSpace(request.TemplateBody) && string.IsNullOrWhiteSpace(request.TemplateTopic))
             {
                 template.Bodies[(request.Brand, request.Lang)] =
-                    _defaultLangTemplateBodies[template.Type];
+                    NotificationTypeDefaults.DefaultLangTemplateBodies[template.Type];
             }
             else
             {
@@ -193,7 +185,7 @@ namespace Service.PushNotification.Services
                 return new Dictionary<(string, string), (string, string)>
                 {
                     {
-                        (brand, lang), _defaultLangTemplateBodies[type]
+                        (brand, lang), NotificationTypeDefaults.DefaultLangTemplateBodies[type]
                     }
                 };
             }
@@ -208,7 +200,7 @@ namespace Service.PushNotification.Services
         {
             try
             {
-                return _templateBodyParams[type];
+                return NotificationTypeDefaults.TemplateBodyParams[type];
             }
             catch (Exception e)
             {

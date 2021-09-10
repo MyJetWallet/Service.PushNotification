@@ -100,8 +100,6 @@ namespace Service.PushNotification.Jobs
         {
             try
             {
-                Console.WriteLine($"{DateTime.UtcNow}: scheduled clean-up");
-
                 if (sessions.All(s => s.RootSessionId().ToString("N") != token.PushToken.RootSessionId))
                 {
                     Console.WriteLine($"{DateTime.UtcNow}: Deleting token for session {token.PushToken.RootSessionId}, client {token.PushToken.ClientId}");
