@@ -101,5 +101,74 @@ namespace Service.PushNotification.Services
                 await _firebaseSender.SendNotificationPush(msgId, pushTokens, title, body);
             }
         }
+
+        public async Task SendPushCryptoDeposit(DepositRequest request)
+        {
+            await SendPush(NotificationTypeEnum.CryptoDepositReceive, request.ClientId, 
+                s => s
+                    .Replace("${SYMBOL}", request.Symbol)
+                    .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture)),
+                request.Symbol, request.Amount.ToString(CultureInfo.InvariantCulture)
+            );
+        }
+
+        public async Task SendPushCryptoWithdrawalStarted(CryptoWithdrawalRequest request)
+        {
+            await SendPush(NotificationTypeEnum.CryptoWithdrawalStarted, request.ClientId,
+                    s => s
+                        .Replace("${SYMBOL}", request.Symbol)
+                        .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
+                        .Replace("${DESTINATION}", request.Destination),
+                    request.Symbol, request.Amount.ToString(CultureInfo.InvariantCulture), request.Destination
+                );
+        }
+
+        public async Task SendPushCryptoWithdrawalComplete(CryptoWithdrawalRequest request)
+        {
+            await SendPush(NotificationTypeEnum.CryptoWithdrawalComplete, request.ClientId,
+                    s => s
+                        .Replace("${SYMBOL}", request.Symbol)
+                        .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
+                        .Replace("${DESTINATION}", request.Destination),
+                    request.Symbol, request.Amount.ToString(CultureInfo.InvariantCulture), request.Destination
+                );
+        }
+
+        public async Task SendPushCryptoWithdrawalDecline(CryptoWithdrawalRequest request)
+        {
+            await SendPush(NotificationTypeEnum.CryptoWithdrawalDecline, request.ClientId,
+                    s => s
+                        .Replace("${SYMBOL}", request.Symbol)
+                        .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
+                        .Replace("${DESTINATION}", request.Destination),
+                    request.Symbol, request.Amount.ToString(CultureInfo.InvariantCulture), request.Destination
+                );
+        }
+
+        private async Task SendPush(NotificationTypeEnum type, string clientId, Func<string, string> applyParams, params string[] paramToHistory)
+        {
+            var tokens = await _tokenManager.GetUserTokens(new GetUserTokensRequest
+            {
+                ClientId = clientId
+            });
+            var msgId = Guid.NewGuid();
+            var parameters = new List<string>(paramToHistory);
+            await _historyService.RecordNotification(msgId, type, clientId, parameters);
+
+            var langGroups = tokens.Tokens.GroupBy(t => t.UserLocale);
+            foreach (var lang in langGroups)
+            {
+                var brand = lang.First().BrandId;
+                var (templateTopic, templateBody) =
+                    await _templateService.GetMessageTemplate(type, brand, lang.Key);
+
+                var title = applyParams.Invoke(templateTopic);
+
+                var body = applyParams.Invoke(templateBody);
+
+                var pushTokens = lang.Select(t => t).ToArray();
+                await _firebaseSender.SendNotificationPush(msgId, pushTokens, title, body);
+            }
+        }
     }
 }

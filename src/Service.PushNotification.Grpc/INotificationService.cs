@@ -1,6 +1,5 @@
 using System.ServiceModel;
 using System.Threading.Tasks;
-using Service.PushNotification.Grpc.Models;
 using Service.PushNotification.Grpc.Models.Requests;
 
 namespace Service.PushNotification.Grpc
@@ -13,5 +12,19 @@ namespace Service.PushNotification.Grpc
         
         [OperationContract]
         Task SendPushTrade(TradePushRequest request);
+
+        [OperationContract]
+        Task SendPushCryptoDeposit(DepositRequest request);
+
+        [OperationContract]
+        Task SendPushCryptoWithdrawalStarted(CryptoWithdrawalRequest request);
+
+        [OperationContract]
+        Task SendPushCryptoWithdrawalComplete(CryptoWithdrawalRequest request);
+
+        [OperationContract]
+        Task SendPushCryptoWithdrawalDecline(CryptoWithdrawalRequest request);
+
+
     }
 }
