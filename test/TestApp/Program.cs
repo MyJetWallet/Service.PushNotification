@@ -18,10 +18,7 @@ namespace TestApp
 
 
             var factory = new PushNotificationClientFactory("http://localhost:5001");
-            var client = factory.GetHelloService();
 
-            var resp = await  client.SayHelloAsync(new HelloRequest(){Name = "Alex"});
-            Console.WriteLine(resp?.Message);
 
             Console.WriteLine("End");
             Console.ReadLine();

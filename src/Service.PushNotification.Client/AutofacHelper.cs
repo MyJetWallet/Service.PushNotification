@@ -11,8 +11,6 @@ namespace Service.PushNotification.Client
         {
             var factory = new PushNotificationClientFactory(grpcServiceUrl);
 
-            builder.RegisterInstance(factory.GetHelloService()).As<IHelloService>().SingleInstance();
-            
             builder.RegisterInstance(factory.GetTokenManager()).As<ITokenManager>().SingleInstance();
 
             builder.RegisterInstance(factory.GetNotificationService()).As<INotificationService>().SingleInstance();
