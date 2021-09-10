@@ -25,6 +25,9 @@ namespace Service.PushNotification.Grpc
         [OperationContract]
         Task SendPushCryptoWithdrawalDecline(CryptoWithdrawalRequest request);
 
+        [OperationContract]
+        Task SendPushCryptoConvert(ConvertRequest request);
+
 
     }
 }

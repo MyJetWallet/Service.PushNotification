@@ -145,6 +145,18 @@ namespace Service.PushNotification.Services
                 );
         }
 
+        public async Task SendPushCryptoConvert(ConvertRequest request)
+        {
+            await SendPush(NotificationTypeEnum.Swap, request.ClientId,
+                s => s
+                    .Replace("${FROM_ASSET}", request.FromSymbol)
+                    .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${TO_ASSET}", request.ToSymbol)
+                    .Replace("${TO_AMOUNT}", request.ToAmount.ToString(CultureInfo.InvariantCulture)),
+                request.FromSymbol, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToSymbol, request.ToAmount.ToString(CultureInfo.InvariantCulture)
+            );
+        }
+
         private async Task SendPush(NotificationTypeEnum type, string clientId, Func<string, string> applyParams, params string[] paramToHistory)
         {
             var tokens = await _tokenManager.GetUserTokens(new GetUserTokensRequest
