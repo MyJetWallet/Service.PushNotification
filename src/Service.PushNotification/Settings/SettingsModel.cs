@@ -29,5 +29,6 @@ namespace Service.PushNotification.Settings
         
         [YamlProperty("PushNotification.TimerPeriodInSec")]
         public int TimerPeriodInSec { get; set; }
+        
     }
 }
