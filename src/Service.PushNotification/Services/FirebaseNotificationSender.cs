@@ -67,7 +67,7 @@ namespace Service.PushNotification.Services
                     }
                 };
 
-                if (!_messagings.TryGetValue(tokens.First().BrandId, out var app))
+                if (!_messagings.TryGetValue(tokens.First().BrandId.ToLower(), out var app))
                 {
                     throw new ArgumentException("Unable to find messaging for BrandId {BrandId}",
                         tokens.First().BrandId);
