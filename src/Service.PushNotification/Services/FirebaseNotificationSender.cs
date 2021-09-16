@@ -17,7 +17,7 @@ namespace Service.PushNotification.Services
     {
         private readonly ILogger<FirebaseNotificationSender> _logger;
         private readonly IHistoryRecordingService _historyService;
-
+        private readonly Dictionary<string, FirebaseMessaging> _messagings = new Dictionary<string, FirebaseMessaging>();
         public FirebaseNotificationSender(ILogger<FirebaseNotificationSender> logger, IHistoryRecordingService historyService)
         {
             _logger = logger;
@@ -30,10 +30,18 @@ namespace Service.PushNotification.Services
             {
                 foreach (var (brand, credentialString) in Program.Settings.EncodedFirebaseCredentials)
                 {
-                    FirebaseApp.Create(new AppOptions()
+                    var app = FirebaseApp.Create(new AppOptions()
                     {
                         Credential = GoogleCredential.FromJson(DecodeFromBase64(credentialString)),
                     }, brand.ToLower());
+                    
+                    if (app == null)
+                    {
+                        throw new ArgumentException("Unable to find credentials for BrandId {BrandId}",
+                            brand);
+                    }
+                    
+                    _messagings.Add(brand, FirebaseMessaging.GetMessaging(app));
                 }
 
             }
@@ -59,13 +67,13 @@ namespace Service.PushNotification.Services
                     }
                 };
 
-                var app = FirebaseApp.GetInstance(tokens.First().BrandId.ToLower());
-                if (app == null)
+                if (!_messagings.TryGetValue(tokens.First().BrandId, out var app))
                 {
-                    throw new ArgumentException("Unable to find credentials for BrandId {BrandId}",
+                    throw new ArgumentException("Unable to find messaging for BrandId {BrandId}",
                         tokens.First().BrandId);
                 }
-                var response = await FirebaseMessaging.GetMessaging(app).SendMulticastAsync(firebaseMessage);
+                    
+                var response = await app.SendMulticastAsync(firebaseMessage);
 
                 for (var index = 0; index < response.Responses.Count; index++)
                 {
