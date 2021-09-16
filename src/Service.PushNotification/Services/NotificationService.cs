@@ -31,6 +31,7 @@ namespace Service.PushNotification.Services
 
         public async Task SendPushLogin(LoginPushRequest request)
         {
+            _logger.LogInformation("Executing SendPushLogin for clientId {clientId}", request.ClientId);
             var tokens = await _tokenManager.GetUserTokens(new GetUserTokensRequest
             {
                 ClientId = request.ClientId
@@ -65,7 +66,8 @@ namespace Service.PushNotification.Services
         }
 
         public async Task SendPushTrade(TradePushRequest request)
-        {
+        {            
+            _logger.LogInformation("Executing SendPushTrade for clientId {clientId}", request.ClientId);
             var tokens = await _tokenManager.GetUserTokens(new GetUserTokensRequest
             {
                 ClientId = request.ClientId
@@ -114,6 +116,7 @@ namespace Service.PushNotification.Services
 
         public async Task SendPushCryptoWithdrawalStarted(CryptoWithdrawalRequest request)
         {
+            _logger.LogInformation("Executing SendPushCryptoWithdrawalStarted for clientId {clientId}", request.ClientId);
             await SendPush(NotificationTypeEnum.CryptoWithdrawalStarted, request.ClientId,
                     s => s
                         .Replace("${SYMBOL}", request.Symbol)
@@ -125,6 +128,7 @@ namespace Service.PushNotification.Services
 
         public async Task SendPushCryptoWithdrawalComplete(CryptoWithdrawalRequest request)
         {
+            _logger.LogInformation("Executing SendPushCryptoWithdrawalComplete for clientId {clientId}", request.ClientId);
             await SendPush(NotificationTypeEnum.CryptoWithdrawalComplete, request.ClientId,
                     s => s
                         .Replace("${SYMBOL}", request.Symbol)
@@ -136,6 +140,7 @@ namespace Service.PushNotification.Services
 
         public async Task SendPushCryptoWithdrawalDecline(CryptoWithdrawalRequest request)
         {
+            _logger.LogInformation("Executing SendPushCryptoWithdrawalDecline for clientId {clientId}", request.ClientId);
             await SendPush(NotificationTypeEnum.CryptoWithdrawalDecline, request.ClientId,
                     s => s
                         .Replace("${SYMBOL}", request.Symbol)
@@ -147,6 +152,7 @@ namespace Service.PushNotification.Services
 
         public async Task SendPushCryptoConvert(ConvertRequest request)
         {
+            _logger.LogInformation("Executing SendPushCryptoConvert for clientId {clientId}", request.ClientId);
             await SendPush(NotificationTypeEnum.Swap, request.ClientId,
                 s => s
                     .Replace("${FROM_ASSET}", request.FromSymbol)
