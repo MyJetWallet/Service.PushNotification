@@ -16,8 +16,8 @@ namespace Service.PushNotification.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterMyNoSqlWriter<TokenNoSqlEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), TokenNoSqlEntity.TableName);
-            builder.RegisterMyNoSqlWriter<TemplateNoSqlEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), TemplateNoSqlEntity.TableName);
+            builder.RegisterMyNoSqlWriter<TokenNoSqlEntity>(() => Program.Settings.MyNoSqlWriterUrl, TokenNoSqlEntity.TableName);
+            builder.RegisterMyNoSqlWriter<TemplateNoSqlEntity>(() => Program.Settings.MyNoSqlWriterUrl, TemplateNoSqlEntity.TableName);
 
             builder.RegisterType<TokenManager>().AsSelf().SingleInstance();
             builder.RegisterType<FirebaseNotificationSender>().As<IFirebaseNotificationSender>().SingleInstance();
