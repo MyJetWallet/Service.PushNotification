@@ -19,10 +19,10 @@ namespace Service.PushNotification.Modules
             builder.RegisterMyNoSqlWriter<TokenNoSqlEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), TokenNoSqlEntity.TableName);
             builder.RegisterMyNoSqlWriter<TemplateNoSqlEntity>(Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), TemplateNoSqlEntity.TableName);
 
-            builder.RegisterType<TokenManager>().As<ITokenManager>();
+            builder.RegisterType<TokenManager>().As<ITokenManager>().InstancePerRequest();
             builder.RegisterType<FirebaseNotificationSender>().As<IFirebaseNotificationSender>().SingleInstance();
             builder.RegisterType<HistoryRecordingService>().As<IHistoryRecordingService>().SingleInstance();
-            builder.RegisterType<TemplateService>().As<ITemplateService>();
+            builder.RegisterType<TemplateService>().As<ITemplateService>().InstancePerRequest();
             builder.RegisterType<TokenCleaner>().AsSelf().SingleInstance();
             
             RegisterAuthServices(builder);
