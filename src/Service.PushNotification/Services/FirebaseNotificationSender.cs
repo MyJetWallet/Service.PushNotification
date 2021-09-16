@@ -42,6 +42,7 @@ namespace Service.PushNotification.Services
                     }
                     
                     _messagings.Add(brand, FirebaseMessaging.GetMessaging(app));
+                    _logger.LogInformation("Created firebase messaging app for brand {brandId}", brand);
                 }
 
             }
