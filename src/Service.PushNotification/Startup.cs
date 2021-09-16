@@ -55,10 +55,10 @@ namespace Service.PushNotification
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcSchema<TokenManager, ITokenManager>();
+                endpoints.MapGrpcSchema<TokenManagerGrpc, ITokenManager>();
                 endpoints.MapGrpcSchema<NotificationService, INotificationService>();
                 endpoints.MapGrpcSchema<HistoryService, IHistoryService>();
-                endpoints.MapGrpcSchema<TemplateService, ITemplateService>();
+                endpoints.MapGrpcSchema<TemplateServiceGrpc, ITemplateService>();
                 endpoints.MapGrpcSchemaRegistry();
 
                 endpoints.MapGet("/", async context =>

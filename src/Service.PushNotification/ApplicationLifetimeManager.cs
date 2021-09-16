@@ -11,10 +11,10 @@ namespace Service.PushNotification
     {
         private readonly ILogger<ApplicationLifetimeManager> _logger;
         private readonly IFirebaseNotificationSender _firebaseSender;
-        private readonly ITemplateService _templateService;
+        private readonly TemplateService _templateService;
         private readonly TokenCleaner _cleaner;
         
-        public ApplicationLifetimeManager(IHostApplicationLifetime appLifetime, ILogger<ApplicationLifetimeManager> logger, IFirebaseNotificationSender firebaseSender, ITemplateService templateService, TokenCleaner cleaner)
+        public ApplicationLifetimeManager(IHostApplicationLifetime appLifetime, ILogger<ApplicationLifetimeManager> logger, IFirebaseNotificationSender firebaseSender, TemplateService templateService, TokenCleaner cleaner)
             : base(appLifetime)
         {
             _logger = logger;

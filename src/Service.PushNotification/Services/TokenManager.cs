@@ -14,7 +14,7 @@ using Service.PushNotification.Grpc.Models.Responses;
 
 namespace Service.PushNotification.Services
 {
-    public class TokenManager : ITokenManager
+    public class TokenManager
     {
 
         private readonly IMyNoSqlServerDataWriter<TokenNoSqlEntity> _noSqlWriter;

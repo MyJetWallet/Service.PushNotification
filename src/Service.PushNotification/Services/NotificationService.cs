@@ -12,15 +12,15 @@ namespace Service.PushNotification.Services
 {
     public class NotificationService : INotificationService
     {
-        private readonly ITokenManager _tokenManager;
+        private readonly TokenManager _tokenManager;
         private readonly ILogger<NotificationService> _logger;
         private readonly IFirebaseNotificationSender _firebaseSender;
         private readonly IHistoryRecordingService _historyService;
-        private readonly ITemplateService _templateService;
+        private readonly TemplateService _templateService;
 
-        public NotificationService(ITokenManager tokenManager, ILogger<NotificationService> logger,
+        public NotificationService(TokenManager tokenManager, ILogger<NotificationService> logger,
             IFirebaseNotificationSender firebaseSender, IHistoryRecordingService historyService,
-            ITemplateService templateService)
+            TemplateService templateService)
         {
             _tokenManager = tokenManager;
             _logger = logger;

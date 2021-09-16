@@ -14,7 +14,7 @@ using Service.PushNotification.Grpc.Models.Responses;
 
 namespace Service.PushNotification.Services
 {
-    public class TemplateService : ITemplateService
+    public class TemplateService
     {
         private readonly ILogger<TemplateService> _logger;
         private readonly IMyNoSqlServerDataWriter<TemplateNoSqlEntity> _templateWriter;
