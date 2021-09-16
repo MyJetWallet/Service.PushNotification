@@ -53,13 +53,9 @@ namespace Service.PushNotification.Services
                 {
                     Console.WriteLine($"{DateTime.UtcNow}: Looking for sessions for token with sessionId {token.PushToken.RootSessionId}");
 
-                    var sessions = _sessionReader.Get(ShortRootSessionNoSqlEntity.GeneratePartitionKey(request.ClientId));
-                    if (sessions.Any())
+                    var session = _sessionReader.Get(request.ClientId, token.PushToken.RootSessionId);
+                    if (session != null)
                     {
-                        foreach (var s in sessions)
-                        {
-                            Console.WriteLine($"{DateTime.UtcNow}: Found session {s.RootSessionId()}, client {s.TraderId()}");
-                        }
                         tokens.Add(token.PushToken);
                     }
                     else
