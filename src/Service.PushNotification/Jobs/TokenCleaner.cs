@@ -49,11 +49,6 @@ namespace Service.PushNotification.Jobs
         
         private async void HandleDelete(IReadOnlyList<ShortRootSessionNoSqlEntity> sessions)
         {
-            foreach (var s in sessions)
-            {
-                Console.WriteLine($"{DateTime.UtcNow}: Received delete event for session {s.RootSessionId()}, client {s.TraderId()}");
-            }
-            
             var tokens = await _tokenWriter.GetAsync();
             var tasks = tokens.Select(token => Task.Run(() => ProcessEventChanges(token, sessions)));
             await Task.WhenAll(tasks);
@@ -74,17 +69,8 @@ namespace Service.PushNotification.Jobs
         {
             try
             {
-                Console.WriteLine($"{DateTime.UtcNow}: event clean-up");
-
-                foreach (var s in sessions)
-                {
-                    Console.WriteLine($"{DateTime.UtcNow}: Session ID {s.RootSessionId().ToString("N")}, client {token.PushToken.RootSessionId}");
-                }
-                
                 if (sessions.Any(s => s.RootSessionId().ToString("N") == token.PushToken.RootSessionId))
                 {
-                    Console.WriteLine($"{DateTime.UtcNow}: Deleting token for session {token.PushToken.RootSessionId}, client {token.PushToken.ClientId}");
-
                     await _tokenWriter.DeleteAsync(token.PartitionKey, token.RowKey);
                     _logger.LogInformation("Removing firebase pushtoken with id {Id} for rootSession {RootSessionId}",token.PushToken.ClientId, token.PushToken.RootSessionId);
                 }
@@ -102,8 +88,6 @@ namespace Service.PushNotification.Jobs
             {
                 if (sessions.All(s => s.RootSessionId().ToString("N") != token.PushToken.RootSessionId))
                 {
-                    Console.WriteLine($"{DateTime.UtcNow}: Deleting token for session {token.PushToken.RootSessionId}, client {token.PushToken.ClientId}");
-
                     await _tokenWriter.DeleteAsync(token.PartitionKey, token.RowKey);
                     _logger.LogInformation("Removing firebase pushtoken with id {Id} for rootSession {RootSessionId}",token.PushToken.ClientId, token.PushToken.RootSessionId);
                 }

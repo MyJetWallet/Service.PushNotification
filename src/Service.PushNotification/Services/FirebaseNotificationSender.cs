@@ -29,7 +29,8 @@ namespace Service.PushNotification.Services
             try
             {
                 foreach (var (brand, credentialString) in Program.Settings.EncodedFirebaseCredentials)
-                {
+                {                    
+                    _logger.LogInformation("Creating firebase messaging app for brand {brandId}", brand);
                     var app = FirebaseApp.Create(new AppOptions()
                     {
                         Credential = GoogleCredential.FromJson(DecodeFromBase64(credentialString)),
@@ -37,12 +38,14 @@ namespace Service.PushNotification.Services
                     
                     if (app == null)
                     {
-                        throw new ArgumentException("Unable to find credentials for BrandId {BrandId}",
+                        _logger.LogError("Unable to create firebase app for BrandId {BrandId}",
                             brand);
                     }
+                    else
+                    {
+                        _messagings.Add(brand, FirebaseMessaging.GetMessaging(app));
+                    }
                     
-                    _messagings.Add(brand, FirebaseMessaging.GetMessaging(app));
-                    _logger.LogInformation("Created firebase messaging app for brand {brandId}", brand);
                 }
 
             }
@@ -70,8 +73,7 @@ namespace Service.PushNotification.Services
 
                 if (!_messagings.TryGetValue(tokens.First().BrandId.ToLower(), out var app))
                 {
-                    throw new ArgumentException("Unable to find messaging for BrandId {BrandId}",
-                        tokens.First().BrandId);
+                    throw new ArgumentException($"Unable to find messaging for BrandId {tokens.First().BrandId}");
                 }
                     
                 var response = await app.SendMulticastAsync(firebaseMessage);
