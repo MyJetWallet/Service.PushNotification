@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Service.PushNotification.Domain.Models.Enums;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models.Requests;
@@ -164,17 +163,30 @@ namespace Service.PushNotification.Services
             );
         }
 
-        public async Task SendPushTransferSend(SendPushTransferSendRequest request)
+        public async Task SendPushTransferSend(SendPushTransferRequest request)
         {
-            _logger.LogInformation("Executing SendPushTransferSend for clientId {clientId}", request.ClientId);
+            _logger.LogInformation("Executing SendPushTransferSend for clientId {clientId}", request.SenderPhoneNumber);
             
-            await SendPush(NotificationTypeEnum.SendTransfer, request.ClientId, 
+            await SendPush(NotificationTypeEnum.SendTransfer, request.SenderPhoneNumber, 
                 s => s
                     .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
                     .Replace("${ASSET_SYMBOL}", request.AssetSymbol)
                     .Replace("${DESTINATION_PHONE_NUMBER}", request.DestinationPhoneNumber),
-                request.SenderPhoneNumber
+                request.SenderPhoneNumber, request.DestinationClientId
             );
+        }
+
+        public async Task SendPushTransferReceive(SendPushTransferRequest request)
+        {
+            _logger.LogInformation("Executing SendPushTransferReceive for clientId {clientId}", request.DestinationClientId);
+            
+            await SendPush(NotificationTypeEnum.ReceiveTransfer, request.DestinationClientId, 
+                    s => s
+                        .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
+                        .Replace("${ASSET_SYMBOL}", request.AssetSymbol)
+                        .Replace("${SENDER_PHONE_NUMBER}", request.SenderPhoneNumber),
+                    request.DestinationPhoneNumber, request.SenderClientId
+                );
         }
 
         private async Task SendPush(NotificationTypeEnum type, string clientId, Func<string, string> applyParams, params string[] paramToHistory)

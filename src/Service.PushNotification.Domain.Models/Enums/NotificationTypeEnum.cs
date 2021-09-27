@@ -11,7 +11,8 @@ namespace Service.PushNotification.Domain.Models.Enums
         CryptoWithdrawalDecline,
         CryptoDepositReceive,
         Swap,
-        SendTransfer
+        SendTransfer,
+        ReceiveTransfer
     }
 
     public static class NotificationTypeDefaults
@@ -27,7 +28,8 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.CryptoWithdrawalDecline, ("Withdrawal Decline ${AMOUNT} ${SYMBOL}", "Decline withdrawal of ${AMOUNT} ${SYMBOL} to address ${DESTINATION}")},
                 {NotificationTypeEnum.CryptoDepositReceive, ("Deposit ${AMOUNT} ${SYMBOL}","Receive deposit of ${AMOUNT} ${SYMBOL}")},
                 {NotificationTypeEnum.Swap, ("The trade was done","You have successfully trade ${FROM_ASSET} ${FROM_AMOUNT} for ${TO_AMOUNT} ${TO_ASSET}")},
-                {NotificationTypeEnum.SendTransfer, ("The transfer was send","You successfully send ${AMOUNT} ${ASSET_SYMBOL} to ${DESTINATION_PHONE_NUMBER}")}
+                {NotificationTypeEnum.SendTransfer, ("The transfer was send","You successfully send ${AMOUNT} ${ASSET_SYMBOL} to ${DESTINATION_PHONE_NUMBER}")},
+                {NotificationTypeEnum.ReceiveTransfer, ("The transfer was received","You received ${AMOUNT} ${ASSET_SYMBOL} from ${SENDER_PHONE_NUMBER}")}
             };
 
         public static readonly IDictionary<NotificationTypeEnum, List<string>> TemplateBodyParams =
@@ -40,7 +42,8 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.CryptoWithdrawalDecline, new List<string> {"${SYMBOL}", "${AMOUNT}", "${DESTINATION}"}},
                 {NotificationTypeEnum.CryptoDepositReceive, new List<string> {"${SYMBOL}", "${AMOUNT}"}},
                 {NotificationTypeEnum.Swap, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${TO_AMOUNT}"}},
-                {NotificationTypeEnum.SendTransfer, new List<string> {"${AMOUNT}", "${ASSET_SYMBOL}", "${DESTINATION_PHONE_NUMBER}"}}
+                {NotificationTypeEnum.SendTransfer, new List<string> {"${AMOUNT}", "${ASSET_SYMBOL}", "${DESTINATION_PHONE_NUMBER}"}},
+                {NotificationTypeEnum.ReceiveTransfer, new List<string> {"${AMOUNT}", "${ASSET_SYMBOL}", "${SENDER_PHONE_NUMBER}"}}
             };
     }
 }
