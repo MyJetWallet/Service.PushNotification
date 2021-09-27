@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Service.PushNotification.Domain.Models.Enums;
 using Service.PushNotification.Grpc;
 using Service.PushNotification.Grpc.Models.Requests;
@@ -160,6 +161,19 @@ namespace Service.PushNotification.Services
                     .Replace("${TO_ASSET}", request.ToSymbol)
                     .Replace("${TO_AMOUNT}", request.ToAmount.ToString(CultureInfo.InvariantCulture)),
                 request.FromSymbol, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToSymbol, request.ToAmount.ToString(CultureInfo.InvariantCulture)
+            );
+        }
+
+        public async Task SendPushTransferSend(SendPushTransferSendRequest request)
+        {
+            _logger.LogInformation("Executing SendPushTransferSend for clientId {clientId}", request.ClientId);
+            
+            await SendPush(NotificationTypeEnum.SendTransfer, request.ClientId, 
+                s => s
+                    .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${ASSET_SYMBOL}", request.AssetSymbol)
+                    .Replace("${DESTINATION_PHONE_NUMBER}", request.DestinationPhoneNumber),
+                request.SenderPhoneNumber
             );
         }
 

@@ -27,7 +27,8 @@ namespace Service.PushNotification.Grpc
 
         [OperationContract]
         Task SendPushCryptoConvert(ConvertRequest request);
-
-
+        
+        [OperationContract]
+        Task SendPushTransferSend(SendPushTransferSendRequest request);
     }
 }
