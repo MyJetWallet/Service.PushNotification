@@ -165,27 +165,29 @@ namespace Service.PushNotification.Services
 
         public async Task SendPushTransferSend(SendPushTransferRequest request)
         {
-            _logger.LogInformation("Executing SendPushTransferSend for clientId {clientId}", request.SenderPhoneNumber);
+            _logger.LogInformation("Executing SendPushTransferSend for clientId {clientId}; Amount: {amount}; Asset: {symbol}", 
+                request.SenderClientId, request.Amount, request.AssetSymbol);
             
             await SendPush(NotificationTypeEnum.SendTransfer, request.SenderPhoneNumber, 
                 s => s
                     .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
                     .Replace("${ASSET_SYMBOL}", request.AssetSymbol)
                     .Replace("${DESTINATION_PHONE_NUMBER}", request.DestinationPhoneNumber),
-                request.SenderPhoneNumber, request.DestinationClientId
+                request.Amount.ToString(CultureInfo.InvariantCulture), request.AssetSymbol
             );
         }
 
         public async Task SendPushTransferReceive(SendPushTransferRequest request)
         {
-            _logger.LogInformation("Executing SendPushTransferReceive for clientId {clientId}", request.DestinationClientId);
+            _logger.LogInformation("Executing SendPushTransferReceive for clientId {clientId}; Amount: {amount}; Asset: {symbol}", 
+                request.DestinationClientId, request.Amount, request.AssetSymbol);
             
             await SendPush(NotificationTypeEnum.ReceiveTransfer, request.DestinationClientId, 
                     s => s
                         .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
                         .Replace("${ASSET_SYMBOL}", request.AssetSymbol)
                         .Replace("${SENDER_PHONE_NUMBER}", request.SenderPhoneNumber),
-                    request.DestinationPhoneNumber, request.SenderClientId
+                    request.Amount.ToString(CultureInfo.InvariantCulture), request.AssetSymbol
                 );
         }
 
