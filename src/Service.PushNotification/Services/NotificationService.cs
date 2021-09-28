@@ -168,7 +168,7 @@ namespace Service.PushNotification.Services
             _logger.LogInformation("Executing SendPushTransferSend for clientId {clientId}; Amount: {amount}; Asset: {symbol}", 
                 request.SenderClientId, request.Amount, request.AssetSymbol);
             
-            await SendPush(NotificationTypeEnum.SendTransfer, request.SenderPhoneNumber, 
+            await SendPush(NotificationTypeEnum.SendTransfer, request.SenderClientId, 
                 s => s
                     .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture))
                     .Replace("${ASSET_SYMBOL}", request.AssetSymbol)
