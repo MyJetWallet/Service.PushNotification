@@ -34,7 +34,9 @@ namespace Service.PushNotification
         {
             Console.Title = "MyJetWallet Service.PushNotification";
 
+            Console.WriteLine("Try to load config...");
             Settings = SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
+            Console.WriteLine("Config is loaded");
 
             using var loggerFactory = LogConfigurator.ConfigureElk("MyJetWallet", Settings.SeqServiceUrl, Settings.ElkLogs);
 

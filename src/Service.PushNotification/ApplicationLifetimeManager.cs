@@ -27,7 +27,7 @@ namespace Service.PushNotification
         {
             _logger.LogInformation("OnStarted has been called.");
             _firebaseSender.Start();
-            _templateService.CreateDefaultTemplates();
+            _templateService.CreateDefaultTemplates().GetAwaiter().GetResult();
             _cleaner.Start();
         }
 

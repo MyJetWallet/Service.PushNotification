@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using MyJetWallet.Sdk.Postgres;
 
 namespace Service.PushNotification.Postgres
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : MyDbContext
     {
         public const string Schema = "pushnotification";
         public const string NotificationHistoryTableName = "notification_history";
@@ -19,25 +20,16 @@ namespace Service.PushNotification.Postgres
         {
         }
 
-        public static ILoggerFactory LoggerFactory { get; set; }
-        
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (LoggerFactory != null)
-            {
-                optionsBuilder.UseLoggerFactory(LoggerFactory).EnableSensitiveDataLogging();
-            }
-        }
-        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(Schema);
 
             modelBuilder.Entity<NotificationHistoryDbEntity>().ToTable(NotificationHistoryTableName);
             modelBuilder.Entity<NotificationHistoryDbEntity>().HasKey(e => e.NotificationId);
-            modelBuilder.Entity<NotificationHistoryDbEntity>().Property(e => e.Params).HasConversion(
-                p => JsonSerializer.Serialize(p, null),
-                p => JsonSerializer.Deserialize<List<string>>(p, null));
+            modelBuilder.Entity<NotificationHistoryDbEntity>()
+                .Property(e => e.Params)
+                .HasColumnName("ParamsJson")
+                .HasColumnType("jsonb");
 
             modelBuilder.Entity<NotificationStatusDbEntity>().ToTable(NotificationStatusTableName);
             modelBuilder.Entity<NotificationStatusDbEntity>().HasKey(e => e.StatusId);
