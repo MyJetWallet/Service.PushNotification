@@ -9,10 +9,14 @@ namespace Service.PushNotification.Domain.Models.Enums
         CryptoWithdrawalStarted,
         CryptoWithdrawalComplete,
         CryptoWithdrawalDecline,
+        CryptoWithdrawalCancel,
         CryptoDepositReceive,
         Swap,
         SendTransfer,
-        ReceiveTransfer
+        ReceiveTransfer,
+        KycDocumentsApproved,
+        KycDocumentsDeclined,
+        KycBanned,
     }
 
     public static class NotificationTypeDefaults
@@ -29,7 +33,13 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.CryptoDepositReceive, ("Deposit ${AMOUNT} ${SYMBOL}","Receive deposit of ${AMOUNT} ${SYMBOL}")},
                 {NotificationTypeEnum.Swap, ("The trade was done","You have successfully trade ${FROM_ASSET} ${FROM_AMOUNT} for ${TO_AMOUNT} ${TO_ASSET}")},
                 {NotificationTypeEnum.SendTransfer, ("The transfer was send","You successfully send ${AMOUNT} ${ASSET_SYMBOL} to ${DESTINATION_PHONE_NUMBER}")},
-                {NotificationTypeEnum.ReceiveTransfer, ("The transfer was received","You received ${AMOUNT} ${ASSET_SYMBOL} from ${SENDER_PHONE_NUMBER}")}
+                {NotificationTypeEnum.ReceiveTransfer, ("The transfer was received","You received ${AMOUNT} ${ASSET_SYMBOL} from ${SENDER_PHONE_NUMBER}")},
+                
+                {NotificationTypeEnum.CryptoWithdrawalCancel, ("Withdrawal canceled ${AMOUNT} ${SYMBOL}","Withdrawal of ${AMOUNT} ${SYMBOL} has been canceled")},
+                {NotificationTypeEnum.KycDocumentsApproved, ("Documents have been verified", "Documents have been verified.")},
+                {NotificationTypeEnum.KycDocumentsDeclined, ("Documents have not been verified.", "Your documents have not been verified. Please upload documents again")},
+                {NotificationTypeEnum.KycBanned, ("We are forced to refuse your service", "We are forced to refuse your service due to the requirements of the regulator")},
+
             };
 
         public static readonly IDictionary<NotificationTypeEnum, List<string>> TemplateBodyParams =
@@ -43,7 +53,12 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.CryptoDepositReceive, new List<string> {"${SYMBOL}", "${AMOUNT}"}},
                 {NotificationTypeEnum.Swap, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${TO_AMOUNT}"}},
                 {NotificationTypeEnum.SendTransfer, new List<string> {"${AMOUNT}", "${ASSET_SYMBOL}", "${DESTINATION_PHONE_NUMBER}"}},
-                {NotificationTypeEnum.ReceiveTransfer, new List<string> {"${AMOUNT}", "${ASSET_SYMBOL}", "${SENDER_PHONE_NUMBER}"}}
+                {NotificationTypeEnum.ReceiveTransfer, new List<string> {"${AMOUNT}", "${ASSET_SYMBOL}", "${SENDER_PHONE_NUMBER}"}},
+                
+                {NotificationTypeEnum.CryptoWithdrawalCancel,  new List<string>{"${AMOUNT}","${SYMBOL}"}},
+                {NotificationTypeEnum.KycDocumentsApproved, new List<string>()},
+                {NotificationTypeEnum.KycDocumentsDeclined, new List<string>()}, 
+                {NotificationTypeEnum.KycBanned, new List<string>()},
             };
     }
 }

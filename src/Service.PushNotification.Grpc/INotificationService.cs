@@ -24,6 +24,9 @@ namespace Service.PushNotification.Grpc
 
         [OperationContract]
         Task SendPushCryptoWithdrawalDecline(CryptoWithdrawalRequest request);
+        
+        [OperationContract]
+        Task SendPushCryptoWithdrawalCancel(CryptoWithdrawalRequest request);
 
         [OperationContract]
         Task SendPushCryptoConvert(ConvertRequest request);
@@ -33,5 +36,14 @@ namespace Service.PushNotification.Grpc
         
         [OperationContract]
         Task SendPushTransferReceive(SendPushTransferRequest request);
+        
+        [OperationContract]
+        Task SendPushKycDocumentsDeclined(KycNotificationRequest request);
+        
+        [OperationContract]
+        Task SendPushKycDocumentsApproved(KycNotificationRequest request);
+        
+        [OperationContract]
+        Task SendPushKycUserBanned(KycNotificationRequest request);
     }
 }

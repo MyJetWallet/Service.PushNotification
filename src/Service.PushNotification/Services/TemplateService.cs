@@ -21,9 +21,7 @@ namespace Service.PushNotification.Services
 
         private const string _defaultBrand = "default";
         private const string _defaultLang = "en";
-
         
-
         public TemplateService(IMyNoSqlServerDataWriter<TemplateNoSqlEntity> templateWriter,
             ILogger<TemplateService> logger)
         {

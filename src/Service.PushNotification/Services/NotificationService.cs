@@ -150,6 +150,17 @@ namespace Service.PushNotification.Services
                 );
         }
 
+        public async Task SendPushCryptoWithdrawalCancel(CryptoWithdrawalRequest request)
+        {
+            _logger.LogInformation("Executing SendPushCryptoWithdrawalCancel for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.CryptoWithdrawalCancel, request.ClientId,
+                s => s
+                    .Replace("${SYMBOL}", request.Symbol)
+                    .Replace("${AMOUNT}", request.Amount.ToString(CultureInfo.InvariantCulture)),
+                request.Symbol, request.Amount.ToString(CultureInfo.InvariantCulture)
+            );        
+        }
+
         public async Task SendPushCryptoConvert(ConvertRequest request)
         {
             _logger.LogInformation("Executing SendPushCryptoConvert for clientId {clientId}", request.ClientId);
@@ -189,6 +200,27 @@ namespace Service.PushNotification.Services
                         .Replace("${SENDER_PHONE_NUMBER}", request.SenderPhoneNumber),
                     request.Amount.ToString(CultureInfo.InvariantCulture), request.AssetSymbol
                 );
+        }
+
+        public async Task SendPushKycDocumentsDeclined(KycNotificationRequest request)
+        {
+            _logger.LogInformation("Executing SendPushKycDocumentsDeclined for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.KycDocumentsDeclined, request.ClientId,
+                s => s);     
+        }
+
+        public async Task SendPushKycDocumentsApproved(KycNotificationRequest request)
+        {
+            _logger.LogInformation("Executing SendPushKycDocumentsApproved for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.KycDocumentsApproved, request.ClientId,
+                s => s);
+        }
+
+        public async Task SendPushKycUserBanned(KycNotificationRequest request)
+        {
+            _logger.LogInformation("Executing SendPushKycUserBanned for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.KycBanned, request.ClientId,
+                s => s);
         }
 
         private async Task SendPush(NotificationTypeEnum type, string clientId, Func<string, string> applyParams, params string[] paramToHistory)
