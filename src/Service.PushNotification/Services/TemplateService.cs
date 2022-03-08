@@ -106,7 +106,7 @@ namespace Service.PushNotification.Services
                     };
 
                     var newTemplateEntity = TemplateNoSqlEntity.Create(template);
-                    await _templateWriter.InsertAsync(newTemplateEntity);
+                    await _templateWriter.InsertOrReplaceAsync(newTemplateEntity);
 
                     _logger.LogInformation("Template (ID: {templateId}) doesn't exist, creating the new one.",
                         type);
