@@ -45,5 +45,11 @@ namespace Service.PushNotification.Grpc
         
         [OperationContract]
         Task SendPushKycUserBanned(KycNotificationRequest request);
+        
+        [OperationContract]
+        Task SendTwoFaEnabled(TwoFaRequest request);
+        
+        [OperationContract]
+        Task SendTwoFaDisabled(TwoFaRequest request);
     }
 }

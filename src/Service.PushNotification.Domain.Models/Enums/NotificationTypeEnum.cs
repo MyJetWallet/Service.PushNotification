@@ -17,6 +17,8 @@ namespace Service.PushNotification.Domain.Models.Enums
         KycDocumentsApproved,
         KycDocumentsDeclined,
         KycBanned,
+        TwoFaEnabled,
+        TwoFaDisabled,
     }
 
     public static class NotificationTypeDefaults
@@ -40,6 +42,9 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.KycDocumentsDeclined, ("Documents have not been verified.", "Your documents have not been verified. Please upload documents again")},
                 {NotificationTypeEnum.KycBanned, ("We are forced to refuse your service", "We are forced to refuse your service due to the requirements of the regulator")},
 
+                {NotificationTypeEnum.TwoFaEnabled, ("Two-factor authentication enabled", "Two-factor authentication on your account was enabled")},
+                {NotificationTypeEnum.TwoFaDisabled, ("Two-factor authentication disabled", "Two-factor authentication on your account was disabled")},
+
             };
 
         public static readonly IDictionary<NotificationTypeEnum, List<string>> TemplateBodyParams =
@@ -59,6 +64,9 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.KycDocumentsApproved, new List<string>()},
                 {NotificationTypeEnum.KycDocumentsDeclined, new List<string>()}, 
                 {NotificationTypeEnum.KycBanned, new List<string>()},
+                
+                {NotificationTypeEnum.TwoFaEnabled, new List<string>()},
+                {NotificationTypeEnum.TwoFaDisabled, new List<string>()},
             };
     }
 }

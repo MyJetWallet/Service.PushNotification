@@ -223,6 +223,20 @@ namespace Service.PushNotification.Services
                 s => s);
         }
 
+        public async Task SendTwoFaEnabled(TwoFaRequest request)
+        {
+            _logger.LogInformation("Executing SendTwoFaEnabled for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.TwoFaEnabled, request.ClientId,
+                s => s);
+        }
+        
+        public async Task SendTwoFaDisabled(TwoFaRequest request)
+        {
+            _logger.LogInformation("Executing SendTwoFaDisabled for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.TwoFaDisabled, request.ClientId,
+                s => s);
+        }
+        
         private async Task SendPush(NotificationTypeEnum type, string clientId, Func<string, string> applyParams, params string[] paramToHistory)
         {
             var tokens = await _tokenManager.GetUserTokens(new GetUserTokensRequest
