@@ -19,6 +19,9 @@ namespace Service.PushNotification.Domain.Models.Enums
         KycBanned,
         TwoFaEnabled,
         TwoFaDisabled,
+        AutoInvestCreate,
+        AutoInvestExecute,
+        AutoInvestFail,
     }
 
     public static class NotificationTypeDefaults
@@ -45,6 +48,10 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.TwoFaEnabled, ("Two-factor authentication enabled", "Two-factor authentication on your account was enabled")},
                 {NotificationTypeEnum.TwoFaDisabled, ("Two-factor authentication disabled", "Two-factor authentication on your account was disabled")},
 
+                {NotificationTypeEnum.AutoInvestCreate, ("Created new auto-invest order", "Buying ${TO_ASSET} ${SCHEDULE_TYPE} for ${FROM_AMOUNT} ${FROM_ASSET}")},
+                {NotificationTypeEnum.AutoInvestExecute, ("Executed auto-invest order", "On ${EXECUTION_TIME} bought ${TO_AMOUNT} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}")},
+                {NotificationTypeEnum.AutoInvestFail, ("Unable to execute auto-invest order", "On ${FAIL_TIME} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}, ${FAIL_REASON}")},
+
             };
 
         public static readonly IDictionary<NotificationTypeEnum, List<string>> TemplateBodyParams =
@@ -67,6 +74,11 @@ namespace Service.PushNotification.Domain.Models.Enums
                 
                 {NotificationTypeEnum.TwoFaEnabled, new List<string>()},
                 {NotificationTypeEnum.TwoFaDisabled, new List<string>()},
+                
+                {NotificationTypeEnum.AutoInvestCreate, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${SCHEDULE_TYPE}"}},
+                {NotificationTypeEnum.AutoInvestExecute, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${TO_AMOUNT}", "${EXECUTION_TIME}"}},
+                {NotificationTypeEnum.AutoInvestFail, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${FAIL_REASON}", "${FAIL_TIME}"}},
+
             };
     }
 }

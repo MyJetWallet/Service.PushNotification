@@ -51,5 +51,12 @@ namespace Service.PushNotification.Grpc
         
         [OperationContract]
         Task SendTwoFaDisabled(TwoFaRequest request);
+        
+        [OperationContract]
+        Task SendAutoInvestCreate(AutoInvestCreateRequest request);
+        [OperationContract]
+        Task SendAutoInvestExecute(AutoInvestExecuteRequest request);
+        [OperationContract]
+        Task SendAutoInvestFail(AutoInvestFailRequest request);
     }
 }
