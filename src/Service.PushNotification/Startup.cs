@@ -30,7 +30,7 @@ namespace Service.PushNotification
 
             services.AddMyTelemetry("SP-", Program.Settings.ZipkinUrl);
             
-            DatabaseContext.LoggerFactory = Program.LogFactory;
+            //DatabaseContext.LoggerFactory = Program.LogFactory;
             services.AddDatabase(DatabaseContext.Schema, Program.Settings.PostgresConnectionString, o => new DatabaseContext(o)); 
         }
 
