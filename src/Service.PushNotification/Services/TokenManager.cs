@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Sdk.Authorization.NoSql;
+using MyJetWallet.Sdk.Service;
 using MyNoSqlServer.Abstractions;
 using Service.PushNotification.Domain.Models;
 using Service.PushNotification.Domain.NoSql;
@@ -31,6 +32,7 @@ namespace Service.PushNotification.Services
 
         public async Task RegisterToken(PushToken request)
         {
+            _logger.LogInformation("Received token registration request {request}", request.ToJson());
             try
             {
                 await _noSqlWriter.InsertOrReplaceAsync(TokenNoSqlEntity.Create(request));
