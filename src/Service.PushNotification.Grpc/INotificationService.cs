@@ -53,10 +53,20 @@ namespace Service.PushNotification.Grpc
         Task SendTwoFaDisabled(TwoFaRequest request);
         
         [OperationContract]
-        Task SendAutoInvestCreate(AutoInvestCreateRequest request);
+        Task SendAutoInvestCreate_Daily(AutoInvestCreateRequest request);
+        [OperationContract]
+        Task SendAutoInvestCreate_Weekly(AutoInvestCreateRequest request);
+        [OperationContract]
+        Task SendAutoInvestCreate_BiWeekly(AutoInvestCreateRequest request);
+        [OperationContract]
+        Task SendAutoInvestCreate_Monthly(AutoInvestCreateRequest request);
         [OperationContract]
         Task SendAutoInvestExecute(AutoInvestExecuteRequest request);
         [OperationContract]
-        Task SendAutoInvestFail(AutoInvestFailRequest request);
+        Task SendAutoInvestFail_InvalidPair(AutoInvestFailRequest request);
+        [OperationContract]
+        Task SendAutoInvestFail_LowBalance(AutoInvestFailRequest request);
+        [OperationContract]
+        Task SendAutoInvestFail_InternalError(AutoInvestFailRequest request);
     }
 }

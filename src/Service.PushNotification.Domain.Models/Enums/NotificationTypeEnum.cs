@@ -19,9 +19,14 @@ namespace Service.PushNotification.Domain.Models.Enums
         KycBanned,
         TwoFaEnabled,
         TwoFaDisabled,
-        AutoInvestCreate,
+        AutoInvestCreateDaily,
+        AutoInvestCreateWeekly,
+        AutoInvestCreateBiWeekly,
+        AutoInvestCreateMonthly,
         AutoInvestExecute,
-        AutoInvestFail,
+        AutoInvestFailLowBalance,
+        AutoInvestFailInvalidPair,
+        AutoInvestFailInternalError,
     }
 
     public static class NotificationTypeDefaults
@@ -48,10 +53,15 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.TwoFaEnabled, ("Two-factor authentication enabled", "Two-factor authentication on your account was enabled")},
                 {NotificationTypeEnum.TwoFaDisabled, ("Two-factor authentication disabled", "Two-factor authentication on your account was disabled")},
 
-                {NotificationTypeEnum.AutoInvestCreate, ("Created new auto-invest order", "Buying ${TO_ASSET} ${SCHEDULE_TYPE} for ${FROM_AMOUNT} ${FROM_ASSET}")},
-                {NotificationTypeEnum.AutoInvestExecute, ("Executed auto-invest order", "On ${EXECUTION_TIME} bought ${TO_AMOUNT} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}")},
-                {NotificationTypeEnum.AutoInvestFail, ("Unable to execute auto-invest order", "On ${FAIL_TIME} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}, ${FAIL_REASON}")},
+                {NotificationTypeEnum.AutoInvestCreateDaily, ("Created new auto-invest order", "Buying ${TO_ASSET} daily for ${FROM_AMOUNT} ${FROM_ASSET}")},
+                {NotificationTypeEnum.AutoInvestCreateWeekly, ("Created new auto-invest order", "Buying ${TO_ASSET} weekly for ${FROM_AMOUNT} ${FROM_ASSET}")},
+                {NotificationTypeEnum.AutoInvestCreateBiWeekly, ("Created new auto-invest order", "Buying ${TO_ASSET} bi-weekly for ${FROM_AMOUNT} ${FROM_ASSET}")},
+                {NotificationTypeEnum.AutoInvestCreateMonthly, ("Created new auto-invest order", "Buying ${TO_ASSET} monthly for ${FROM_AMOUNT} ${FROM_ASSET}")},
 
+                {NotificationTypeEnum.AutoInvestExecute, ("Executed auto-invest order", "On ${EXECUTION_TIME} bought ${TO_AMOUNT} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}")},
+                {NotificationTypeEnum.AutoInvestFailLowBalance, ("Unable to execute auto-invest order", "On ${FAIL_TIME} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}, Not enough balance")},
+                {NotificationTypeEnum.AutoInvestFailInvalidPair, ("Unable to execute auto-invest order", "On ${FAIL_TIME} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}, Invalid swap pair")},
+                {NotificationTypeEnum.AutoInvestFailInternalError, ("Unable to execute auto-invest order", "On ${FAIL_TIME} ${TO_ASSET} for ${FROM_AMOUNT} ${FROM_ASSET}, Internal Server Error")},
             };
 
         public static readonly IDictionary<NotificationTypeEnum, List<string>> TemplateBodyParams =
@@ -75,9 +85,15 @@ namespace Service.PushNotification.Domain.Models.Enums
                 {NotificationTypeEnum.TwoFaEnabled, new List<string>()},
                 {NotificationTypeEnum.TwoFaDisabled, new List<string>()},
                 
-                {NotificationTypeEnum.AutoInvestCreate, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${SCHEDULE_TYPE}"}},
+                {NotificationTypeEnum.AutoInvestCreateDaily, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}"}},
+                {NotificationTypeEnum.AutoInvestCreateWeekly, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}"}},
+                {NotificationTypeEnum.AutoInvestCreateBiWeekly, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}"}},
+                {NotificationTypeEnum.AutoInvestCreateMonthly, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}"}},
+
                 {NotificationTypeEnum.AutoInvestExecute, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${TO_AMOUNT}", "${EXECUTION_TIME}"}},
-                {NotificationTypeEnum.AutoInvestFail, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${FAIL_REASON}", "${FAIL_TIME}"}},
+                {NotificationTypeEnum.AutoInvestFailLowBalance, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${FAIL_TIME}"}},
+                {NotificationTypeEnum.AutoInvestFailInvalidPair, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${FAIL_TIME}"}},
+                {NotificationTypeEnum.AutoInvestFailInternalError, new List<string> {"${FROM_ASSET}", "${FROM_AMOUNT}", "${TO_ASSET}", "${FAIL_TIME}"}},
 
             };
     }

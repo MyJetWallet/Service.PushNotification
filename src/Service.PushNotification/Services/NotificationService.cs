@@ -237,19 +237,50 @@ namespace Service.PushNotification.Services
                 s => s);
         }
 
-        public async Task SendAutoInvestCreate(AutoInvestCreateRequest request)
+        public async Task SendAutoInvestCreate_Daily(AutoInvestCreateRequest request)
         {
-            _logger.LogInformation("Executing SendAutoInvestCreate for clientId {clientId}", request.ClientId);
-            await SendPush(NotificationTypeEnum.AutoInvestCreate, request.ClientId,
+            _logger.LogInformation("Executing SendAutoInvestCreate_Daily for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.AutoInvestCreateDaily, request.ClientId,
                 s => s
                     .Replace("${FROM_ASSET}", request.FromAsset)
                     .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
-                    .Replace("${TO_ASSET}", request.ToAsset)
-                    .Replace("${SCHEDULE_TYPE}", request.ScheduleType),
-                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset, request.ScheduleType
-            );
+                    .Replace("${TO_ASSET}", request.ToAsset),
+                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset);
         }
 
+        public async Task SendAutoInvestCreate_Weekly(AutoInvestCreateRequest request)
+        {
+            _logger.LogInformation("Executing SendAutoInvestCreate_Weekly for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.AutoInvestCreateWeekly, request.ClientId,
+                s => s
+                    .Replace("${FROM_ASSET}", request.FromAsset)
+                    .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${TO_ASSET}", request.ToAsset),
+                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset);
+        }
+
+        public async Task SendAutoInvestCreate_BiWeekly(AutoInvestCreateRequest request)
+        {
+            _logger.LogInformation("Executing SendAutoInvestCreate_BiWeekly for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.AutoInvestCreateBiWeekly, request.ClientId,
+                s => s
+                    .Replace("${FROM_ASSET}", request.FromAsset)
+                    .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${TO_ASSET}", request.ToAsset),
+                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset);
+        }
+
+        public async Task SendAutoInvestCreate_Monthly(AutoInvestCreateRequest request)
+        {
+            _logger.LogInformation("Executing SendAutoInvestCreate_Monthly for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.AutoInvestCreateMonthly, request.ClientId,
+                s => s
+                    .Replace("${FROM_ASSET}", request.FromAsset)
+                    .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${TO_ASSET}", request.ToAsset),
+                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset);
+        }
+        
         public async Task SendAutoInvestExecute(AutoInvestExecuteRequest request)
         {
             _logger.LogInformation("Executing SendAutoInvestExecute for clientId {clientId}", request.ClientId);
@@ -264,19 +295,47 @@ namespace Service.PushNotification.Services
             );        
         }
 
-        public async Task SendAutoInvestFail(AutoInvestFailRequest request)
+        public async Task SendAutoInvestFail_InvalidPair(AutoInvestFailRequest request)
         {
-            _logger.LogInformation("Executing SendAutoInvestFail for clientId {clientId}", request.ClientId);
-            await SendPush(NotificationTypeEnum.AutoInvestFail, request.ClientId,
+            _logger.LogInformation("Executing SendAutoInvestFail_InvalidPair for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.AutoInvestFailInvalidPair, request.ClientId,
                 s => s
                     .Replace("${FROM_ASSET}", request.FromAsset)
                     .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
                     .Replace("${TO_ASSET}", request.ToAsset)
-                    .Replace("${FAIL_REASON}", request.FailureReason)
                     .Replace("${FAIL_TIME}", request.FailTime.ToString("R")),
-                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset, request.FailureReason, request.FailTime.ToString("s")
+                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset, request.FailTime.ToString("s")
+            );
+            
+        }
+
+        public async Task SendAutoInvestFail_LowBalance(AutoInvestFailRequest request)
+        {
+            _logger.LogInformation("Executing SendAutoInvestFail_LowBalance for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.AutoInvestFailLowBalance, request.ClientId,
+                s => s
+                    .Replace("${FROM_ASSET}", request.FromAsset)
+                    .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${TO_ASSET}", request.ToAsset)
+                    .Replace("${FAIL_TIME}", request.FailTime.ToString("R")),
+                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset, request.FailTime.ToString("s")
+            );
+            
+        }
+
+        public async Task SendAutoInvestFail_InternalError(AutoInvestFailRequest request)
+        {
+            _logger.LogInformation("Executing SendAutoInvestFail_InternalError for clientId {clientId}", request.ClientId);
+            await SendPush(NotificationTypeEnum.AutoInvestFailInternalError, request.ClientId,
+                s => s
+                    .Replace("${FROM_ASSET}", request.FromAsset)
+                    .Replace("${FROM_AMOUNT}", request.FromAmount.ToString(CultureInfo.InvariantCulture))
+                    .Replace("${TO_ASSET}", request.ToAsset)
+                    .Replace("${FAIL_TIME}", request.FailTime.ToString("R")),
+                request.FromAsset, request.FromAmount.ToString(CultureInfo.InvariantCulture), request.ToAsset, request.FailTime.ToString("s")
             );
         }
+        
 
         private async Task SendPush(NotificationTypeEnum type, string clientId, Func<string, string> applyParams, params string[] paramToHistory)
         {
